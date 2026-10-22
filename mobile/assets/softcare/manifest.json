@@ -1,0 +1,512 @@
+[
+  {
+    "name": "home",
+    "group": "navigation",
+    "path": "assets/softcare/icons/home.png",
+    "source_sheet": "a_clean_graphic_illustration_on_a_transparent_back_3_batch_3.png",
+    "crop": [
+      0,
+      0,
+      490,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "e237ddf45f5c4ad4d1ac0360dac0ffa5551510971f3952f414b138cd72652ae2"
+  },
+  {
+    "name": "medicines",
+    "group": "navigation",
+    "path": "assets/softcare/icons/medicines.png",
+    "source_sheet": "a_clean_graphic_illustration_on_a_transparent_back_3_batch_3.png",
+    "crop": [
+      490,
+      0,
+      970,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "5fee6a7cb55c67d1c11b37198e390967429d8dfd31972a9db62d9e1e216762af"
+  },
+  {
+    "name": "calendar",
+    "group": "navigation",
+    "path": "assets/softcare/icons/calendar.png",
+    "source_sheet": "a_clean_graphic_illustration_on_a_transparent_back_3_batch_3.png",
+    "crop": [
+      970,
+      0,
+      1448,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "6c62513a4ca1f819a8b7891951c3b97dfbc09ac1c02682dd673e11805cd886dc"
+  },
+  {
+    "name": "history",
+    "group": "navigation",
+    "path": "assets/softcare/icons/history.png",
+    "source_sheet": "a_clean_graphic_illustration_on_a_transparent_back_3_batch_3.png",
+    "crop": [
+      0,
+      545,
+      724,
+      1086
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "3de99e4fde0b42d566ae63668d94c0a4b14c8cfaabf0c9cd263ee03428a14144"
+  },
+  {
+    "name": "settings",
+    "group": "navigation",
+    "path": "assets/softcare/icons/settings.png",
+    "source_sheet": "a_clean_graphic_illustration_on_a_transparent_back_3_batch_3.png",
+    "crop": [
+      724,
+      545,
+      1448,
+      1086
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "684f36689f2c730395f2776a7b715c198edfaaa0c29408c1604eece792e48b9e"
+  },
+  {
+    "name": "tablet",
+    "group": "medications",
+    "path": "assets/softcare/icons/tablet.png",
+    "source_sheet": "a_clean_transparent_png_style_illustration_graphic_4_batch_4.png",
+    "crop": [
+      0,
+      0,
+      490,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "87451839e7de9620ad7b2454c79d54a316e42ced8055d32a0da857cf41c8aff5"
+  },
+  {
+    "name": "capsule",
+    "group": "medications",
+    "path": "assets/softcare/icons/capsule.png",
+    "source_sheet": "a_clean_transparent_png_style_illustration_graphic_4_batch_4.png",
+    "crop": [
+      490,
+      0,
+      970,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "164e17bdd6f1811a97203a4b5a2eb258e60548ddc0dfb748ab6f4ec1cf8e254e"
+  },
+  {
+    "name": "liquid",
+    "group": "medications",
+    "path": "assets/softcare/icons/liquid.png",
+    "source_sheet": "a_clean_transparent_png_style_illustration_graphic_4_batch_4.png",
+    "crop": [
+      970,
+      0,
+      1448,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "a23e2204c4dd547ab6499a2b735238d080bcf100fdadb99b970fffed13e08b10"
+  },
+  {
+    "name": "drops",
+    "group": "medications",
+    "path": "assets/softcare/icons/drops.png",
+    "source_sheet": "a_clean_transparent_png_style_illustration_graphic_4_batch_4.png",
+    "crop": [
+      0,
+      545,
+      724,
+      1086
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "edc2acf9bd73802dfd1a98fe85e81f35cd361b18897fef239495233d521bf1ca"
+  },
+  {
+    "name": "package",
+    "group": "medications",
+    "path": "assets/softcare/icons/package.png",
+    "source_sheet": "a_clean_transparent_png_style_illustration_graphic_4_batch_4.png",
+    "crop": [
+      724,
+      545,
+      1448,
+      1086
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "ef3dbda8497b9df8891d64e8aea5043a093861c9be0f3f5ab5b750e959bb75b6"
+  },
+  {
+    "name": "clock",
+    "group": "scheduling",
+    "path": "assets/softcare/icons/clock.png",
+    "source_sheet": "a_clean_vector_style_illustration_on_a_transparent_5_batch_5.png",
+    "crop": [
+      0,
+      0,
+      490,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "913e5f44af798177f7b89ec105dde20d251e2f356be1a17f837da37d737b7ee1"
+  },
+  {
+    "name": "weekly",
+    "group": "scheduling",
+    "path": "assets/softcare/icons/weekly.png",
+    "source_sheet": "a_clean_vector_style_illustration_on_a_transparent_5_batch_5.png",
+    "crop": [
+      490,
+      0,
+      970,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "dc6d403b5351c63a553d26dc415ef50cba1d456b211c00de09a95c5a42d51b34"
+  },
+  {
+    "name": "repeat-cycle",
+    "group": "scheduling",
+    "path": "assets/softcare/icons/repeat-cycle.png",
+    "source_sheet": "a_clean_vector_style_illustration_on_a_transparent_5_batch_5.png",
+    "crop": [
+      970,
+      0,
+      1448,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "a6d8ee8071e8526acfa76ec8040637c5023f10ab1b51d4309608b4e1243f44d8"
+  },
+  {
+    "name": "duration",
+    "group": "scheduling",
+    "path": "assets/softcare/icons/duration.png",
+    "source_sheet": "a_clean_vector_style_illustration_on_a_transparent_5_batch_5.png",
+    "crop": [
+      0,
+      545,
+      724,
+      1086
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "ea8e42489752daaf64e92d856a568d89d3afa8c3b1fa76c2b839c329b94c9449"
+  },
+  {
+    "name": "day-plan",
+    "group": "scheduling",
+    "path": "assets/softcare/icons/day-plan.png",
+    "source_sheet": "a_clean_vector_style_illustration_on_a_transparent_5_batch_5.png",
+    "crop": [
+      724,
+      545,
+      1448,
+      1086
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "dcbdf959cb9a040bcf0ff21801ebc2ed17b4ac3cb6fe7ca8920bc49b1cfb161f"
+  },
+  {
+    "name": "bell",
+    "group": "notifications",
+    "path": "assets/softcare/icons/bell.png",
+    "source_sheet": "a_high_resolution_png_style_transparent_background_6_batch_6.png",
+    "crop": [
+      0,
+      0,
+      490,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "89459af2e3bfa17860a5f5b188fa93f2f80ef0644d0179b4df92a0b0f6d5dade"
+  },
+  {
+    "name": "alarm",
+    "group": "notifications",
+    "path": "assets/softcare/icons/alarm.png",
+    "source_sheet": "a_high_resolution_png_style_transparent_background_6_batch_6.png",
+    "crop": [
+      490,
+      0,
+      970,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "43670c409bd9331a9628357a28614e98c814b2da96603919e356fce165370017"
+  },
+  {
+    "name": "snooze",
+    "group": "notifications",
+    "path": "assets/softcare/icons/snooze.png",
+    "source_sheet": "a_high_resolution_png_style_transparent_background_6_batch_6.png",
+    "crop": [
+      970,
+      0,
+      1448,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "c8e65f8911d4b83a239ffbc8d24a3a9664af11fd547cc04a0ed63d97e8401743"
+  },
+  {
+    "name": "muted",
+    "group": "notifications",
+    "path": "assets/softcare/icons/muted.png",
+    "source_sheet": "a_high_resolution_png_style_transparent_background_6_batch_6.png",
+    "crop": [
+      0,
+      545,
+      724,
+      1086
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "dfe51fdf21d270ba92de9debfee70d66d949d440cdee08b8bf22a6da1fb1a36a"
+  },
+  {
+    "name": "pending",
+    "group": "notifications",
+    "path": "assets/softcare/icons/pending.png",
+    "source_sheet": "a_high_resolution_png_style_transparent_background_6_batch_6.png",
+    "crop": [
+      724,
+      545,
+      1448,
+      1086
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "aeb2c8336511786941e779ba618f74c98dd50f6137888fffdf2577fa03195fe6"
+  },
+  {
+    "name": "add",
+    "group": "actions",
+    "path": "assets/softcare/icons/add.png",
+    "source_sheet": "a_clean_transparent_background_vector_style_illust_7_batch_7.png",
+    "crop": [
+      0,
+      0,
+      490,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "2143602db7c484acd17c31deb566dbb8dab3ad962162c333012133324ea3d015"
+  },
+  {
+    "name": "edit",
+    "group": "actions",
+    "path": "assets/softcare/icons/edit.png",
+    "source_sheet": "a_clean_transparent_background_vector_style_illust_7_batch_7.png",
+    "crop": [
+      490,
+      0,
+      970,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "b681256ea16455741313f965b0e82c51df0b2fc7235995495ab1e79b2000ca2a"
+  },
+  {
+    "name": "delete",
+    "group": "actions",
+    "path": "assets/softcare/icons/delete.png",
+    "source_sheet": "a_clean_transparent_background_vector_style_illust_7_batch_7.png",
+    "crop": [
+      970,
+      0,
+      1448,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "0098f8c29fe6461040684ba5704637050f70ed2036fd836970ecd3dc7954bc51"
+  },
+  {
+    "name": "confirm",
+    "group": "actions",
+    "path": "assets/softcare/icons/confirm.png",
+    "source_sheet": "a_clean_transparent_background_vector_style_illust_7_batch_7.png",
+    "crop": [
+      0,
+      545,
+      724,
+      1086
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "ac72547371c375502f6d458c589345bbfc90992734f945ca05f83427465202dc"
+  },
+  {
+    "name": "pause",
+    "group": "actions",
+    "path": "assets/softcare/icons/pause.png",
+    "source_sheet": "a_clean_transparent_background_vector_style_illust_7_batch_7.png",
+    "crop": [
+      724,
+      545,
+      1448,
+      1086
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "f0965f1a23245cb413577f13eba93f79a38e9f9c57447c9c36530789462622d6"
+  },
+  {
+    "name": "taken",
+    "group": "status",
+    "path": "assets/softcare/icons/taken.png",
+    "source_sheet": "a_clean_transparent_png_style_illustration_sheet_8_batch_8.png",
+    "crop": [
+      0,
+      0,
+      490,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "bc4219204c95c6d580e379db3309f42633b24558ffb1fe755b9412a019b1cfc0"
+  },
+  {
+    "name": "unconfirmed",
+    "group": "status",
+    "path": "assets/softcare/icons/unconfirmed.png",
+    "source_sheet": "a_clean_transparent_png_style_illustration_sheet_8_batch_8.png",
+    "crop": [
+      490,
+      0,
+      970,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "29d21b7f0a402ab45fc79aa7b1c0628003974100d9037349ac0133566d97d233"
+  },
+  {
+    "name": "overdue",
+    "group": "status",
+    "path": "assets/softcare/icons/overdue.png",
+    "source_sheet": "a_clean_transparent_png_style_illustration_sheet_8_batch_8.png",
+    "crop": [
+      970,
+      0,
+      1448,
+      545
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "69e3f579c114e42a0138edaa17862e13df73dbdf425656cc5547b2d1b69958ec"
+  },
+  {
+    "name": "completed",
+    "group": "status",
+    "path": "assets/softcare/icons/completed.png",
+    "source_sheet": "a_clean_transparent_png_style_illustration_sheet_8_batch_8.png",
+    "crop": [
+      0,
+      545,
+      724,
+      1086
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "c39068cfdb99de46aac6f20e6006abc0370ff2268fd4da49ea3ef9d72ba78627"
+  },
+  {
+    "name": "empty",
+    "group": "status",
+    "path": "assets/softcare/icons/empty.png",
+    "source_sheet": "a_clean_transparent_png_style_illustration_sheet_8_batch_8.png",
+    "crop": [
+      724,
+      545,
+      1448,
+      1086
+    ],
+    "size": [
+      256,
+      256
+    ],
+    "sha256": "291eb0e4b6f3bafb140355cc7e5072c2906532deb181cd2f166b2b7ab26abfed"
+  }
+]

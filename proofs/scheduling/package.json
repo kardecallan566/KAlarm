@@ -1,0 +1,10 @@
+{
+  "name": "@kalarm/scheduling-proof",
+  "private": true,
+  "type": "module",
+  "description": "Pure TypeScript scheduling engine; isolated from Expo and external dependencies.",
+  "scripts": {
+    "test": "node --disable-warning=ExperimentalWarning --experimental-strip-types --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  }
+}
