@@ -26,7 +26,8 @@ export default function AlarmTest(){
     finally{await refresh();setBusy(false);}
   };
   return <Page title="Verificar alarmes" subtitle="Teste técnico de notificações do KAlarm, sem cadastrar medicamentos.">
-    <Action label="Voltar ao início" secondary onPress={()=>router.back()}/>
+    <Action label="Voltar" secondary onPress={()=>router.back()}/>
+    <Action label="Gerenciar alarmes de medicamentos" secondary onPress={()=>router.push('/reminder-settings')}/>
     <Panel tone="mint"><Heading>Estado do aparelho</Heading>
       <StatusLine ok={diag?.notificationPermission??null} title="Permissão de notificações" details={diag?.notificationPermission?'Concedida':'Negada ou indisponível'}/>
       <StatusLine ok={diag?.exactAlarmPermission??null} title="Alarme exato" details={Platform.OS==='android'?(diag?.exactAlarmPermission?'Permitido':'Pode ter atraso; solicitar acesso se necessário'):'Não se aplica a este teste Android'}/>
