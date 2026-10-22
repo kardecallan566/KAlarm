@@ -41,8 +41,8 @@ Um despertador de medicação **simples para uma dose fixa e flexível para um t
 
 ## Entregas técnicas herdadas da v3
 
-- [Galeria dos 35 ícones SoftCare](softcare-preview.png) e [SVGs originais](assets/icons/softcare/).
-- [Comparação de layouts compactos/tablet](softcare-responsive-preview.png) (mockup estático).
+- [Biblioteca SVG de 35 ícones](assets/icons/softcare/) para componentes vetoriais e fallback.
+- [Especificação de layout responsivo](docs/04-responsividade.md) para telas compactas e tablets.
 - [Componente React Native `SoftCareIcon`](components/softcare/SoftCareIcon.tsx) + mapa XML do pack.
 - [Motor de agendamentos TypeScript](proofs/scheduling/src/engine.ts) com 23 testes locais aprovados.
 - [Esquema SQLite](proofs/sqlite/migrations/0001_core.sql) com 7 testes locais aprovados.
@@ -73,7 +73,7 @@ python3 -m unittest discover -s tests -v
 
 **CP00** documentação → **CP01** biblioteca SVG (primeira versão entregue; homologação pendente) → **CP02** protótipos adaptáveis → **CP03** scaffold Expo/CI → **CP04** motor e SQLite (provas locais, integração pendente) → **CP05** editor e calendário → **CP06** alarmes e histórico → **CP07** acessibilidade/segurança → **CP08** beta Play → **CP09** lançamento.
 
-**Status GitHub:** na tentativa anterior a integração retornou **HTTP 403** ao criar arquivos no repositório. Este ZIP é um pacote local pronto para publicação; não declarar que conteúdo foi enviado à `main` sem um commit verificável.
+**Status GitHub:** código, documentos e 30 ícones SoftCare **publicados na `main`** em 21/10/2026. A publicação do código não equivale a APK compilado ou alarmes homologados.
 
 
 ## Planejamento v4 — fechamento de requisitos
@@ -93,11 +93,12 @@ A rodada v4 aprofunda alarmes, editor, responsividade, privacidade, QA e publica
 
 ## Atualização v6 — Ícones ilustrados realmente integrados ao Expo
 
-- [Galeria dos 30 novos PNGs SoftCare](softcare-icons-v6-preview.png) — 6 famílias, exportadas de cartelas de imagem com fundo transparente.
+- [Coleção dos 30 PNGs SoftCare](mobile/assets/softcare/icons/) — 6 famílias de ícones ilustrados com fundo transparente.
 - [Catálogo e hashes](mobile/assets/softcare/manifest.json) — imagens individuais em [`mobile/assets/softcare/icons/`](mobile/assets/softcare/icons/).
 - [Ícone oficial do KAlarm](mobile/assets/icon.png), [ícone adaptativo](mobile/assets/adaptive-icon.png), [monocromático](mobile/assets/adaptive-icon-monochrome.png), [splash](mobile/assets/splash.png) e [marca](mobile/assets/brandmark.png).
 - [Componente SoftCareIcon](mobile/src/components/icons/SoftCareIcon.tsx) seleciona os **novos PNGs** por importações estáticas, com SVGs como fallback.
 - [Galeria dentro do app](mobile/app/icon-gallery.tsx), acessível na aba **Início**.
 - Verificações executadas: integridade dos 30 assets e referências, parse de arquivos TypeScript/TSX.
-- **Sem build de APK concluída**: dependências não foram instaladas neste ambiente. Necessário validar a renderização visual no aparelho antes de concluir o checkpoint.
+- **Sem build de APK concluída**: dependências não foram instaladas neste ambiente. É necessário validar a renderização visual e a entrega dos alarmes em aparelho real antes de concluir o checkpoint.
+- **Publicação no GitHub concluída:** assets e código na `main`; os hashes do catálogo correspondem aos PNGs otimizados.
 - Detalhes em [Checkpoint v6](CHECKPOINT-V6.md) e [documentação mobile](mobile/ASSETS-SOFTCARE.md).
