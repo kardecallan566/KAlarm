@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {makeReminderPlan,diffReminderPlan} from '../../../mobile/src/services/reminderPlan.ts';
+const now=Date.UTC(2026,9,22,10,0);
+const e=(id:string,minutes:number,quantity='1')=>({id,plannedAtISO:new Date(now+minutes*60000).toISOString(),localTime:'08:00',medicationName:'Medicamento fictício',quantity,unit:'tablet'});
+test('omite confirmadas e vencidas',()=>assert.deepEqual(makeReminderPlan([e('past',-5),e('taken',10),e('new',20)],new Set(['taken']),now,false).map(x=>x.id),['new']));
+test('ordena e limita sem duplicar',()=>assert.deepEqual(makeReminderPlan([e('c',60),e('a',10),e('a',10),e('b',30)],new Set(),now,false,2).map(x=>x.id),['a','b']));
+test('mantém aviso correspondente',()=>{const [p]=makeReminderPlan([e('a',10)],new Set(),now,false);const d=diffReminderPlan([p],[{identifier:'n1',occurrenceId:'a',fingerprint:p.fingerprint}]);assert.equal(d.keep.length,1);assert.equal(d.create.length,0)});
+test('edição de dose detalhada força substituição',()=>{const [before]=makeReminderPlan([e('a',10)],new Set(),now,true),[after]=makeReminderPlan([e('a',10,'2')],new Set(),now,true);const d=diffReminderPlan([after],[{identifier:'old',occurrenceId:'a',fingerprint:before.fingerprint}]);assert.deepEqual(d.cancelIds,['old']);assert.equal(d.create.length,1)});
+test('modo discreto não inclui nome nem dose no fingerprint',()=>{const [p]=makeReminderPlan([e('a',10,'2')],new Set(),now,false);assert.equal(p.fingerprint.includes('Medicamento fictício'),false);assert.equal(p.fingerprint.includes('tablet'),false)});
+test('remove duplicados e órfãos',()=>{const [p]=makeReminderPlan([e('a',10)],new Set(),now,false);const d=diffReminderPlan([p],[{identifier:'one',occurrenceId:'a',fingerprint:p.fingerprint},{identifier:'duplicate',occurrenceId:'a',fingerprint:p.fingerprint},{identifier:'orphan',occurrenceId:'other',fingerprint:'old'}]);assert.deepEqual(d.cancelIds,['duplicate','orphan'])});
+test('confirmação cancela alerta ainda pendente',()=>{const [p]=makeReminderPlan([e('a',10)],new Set(),now,false);assert.deepEqual(diffReminderPlan([], [{identifier:'native',occurrenceId:'a',fingerprint:p.fingerprint}]).cancelIds,['native'])});
+test('limites inválidos são rejeitados',()=>{assert.throws(()=>makeReminderPlan([],new Set(),now,false,0));assert.throws(()=>makeReminderPlan([],new Set(),now,false,100))});

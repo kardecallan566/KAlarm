@@ -33,5 +33,5 @@
     "expo-doctor": "*",
     "eas-cli": "*"
   },
-  "packageManager": "pnpm@10.9.2"
+  "packageManager": "pnpm@10.34.7"
 }

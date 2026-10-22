@@ -10,6 +10,7 @@ import { previewOccurrences } from '../core/scheduling';
 import { deviceTimezone, formatDay, localToday, offsetDate, readableQuantity } from '../core/dates';
 import { DayEditor, NO_DOSE, newDay } from './DayEditor';
 import { getMedication, saveMedication } from '../data/medications';
+import { reconcileMedicationReminders } from '../services/medicationReminders';
 
 const weekdayNames=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
 const clone=(x:DayPlan):DayPlan=>JSON.parse(JSON.stringify(x)) as DayPlan;
@@ -52,7 +53,7 @@ export function MedicationForm({id}:{id?:string}) {
   const save=async()=>{
     if(!reviewed||saving)return;
     setSaving(true);
-    try{await saveMedication(db,{name,form,strengthLabel:strength,startDate,timezone,recurrence:makeRecurrence()},id);router.replace('/(tabs)/medicines');}
+    try{await saveMedication(db,{name,form,strengthLabel:strength,startDate,timezone,recurrence:makeRecurrence()},id);try{await reconcileMedicationReminders(db)}catch(_error){Alert.alert('Rotina salva','O tratamento foi salvo, mas não foi possível atualizar os alarmes. Confira em Meus alarmes.')}router.replace('/(tabs)/medicines');}
     catch(e){setError(e instanceof Error?e.message:String(e));}
     finally{setSaving(false);}
   };
@@ -84,7 +85,7 @@ export function MedicationForm({id}:{id?:string}) {
       {preview.slice(0,24).map(o=><View key={o.id} style={{paddingVertical:8,borderBottomWidth:1,borderBottomColor:c.border,flexDirection:width>=520?'row':'column',gap:6,justifyContent:'space-between'}}><Text style={{color:c.ink,fontWeight:'700'}}>{formatDay(o.localDate)} · {o.localTime}</Text><Body>{readableQuantity(o.quantity,o.unit)}</Body></View>)}
       {preview.length>24?<Body muted>Mais {preview.length-24} tomadas previstas nesta janela.</Body>:null}
       <View style={{height:14}}/><Action label={saving?'Salvando...':'Confirmar e salvar tratamento'} disabled={saving} icon="confirm" onPress={save}/>
-      <Body muted>Salva no celular. O agendamento automático de notificações de tratamento ainda está em desenvolvimento.</Body>
+      <Body muted>Salvo no celular. Os avisos são opcionais e devem ser ativados em Meus alarmes. Confira as permissões e teste no aparelho.</Body>
     </Panel>:null}
   </Page>;
 }
