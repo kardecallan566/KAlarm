@@ -102,3 +102,8 @@ A rodada v4 aprofunda alarmes, editor, responsividade, privacidade, QA e publica
 - **Sem build de APK concluída**: dependências não foram instaladas neste ambiente. É necessário validar a renderização visual e a entrega dos alarmes em aparelho real antes de concluir o checkpoint.
 - **Publicação no GitHub concluída:** assets e código na `main`; os hashes do catálogo correspondem aos PNGs otimizados.
 - Detalhes em [Checkpoint v6](CHECKPOINT-V6.md) e [documentação mobile](mobile/ASSETS-SOFTCARE.md).
+
+
+## CP06 — Alarmes locais (experimental)
+
+A branch `feat/cp06-android-medication-reminders` adiciona o primeiro agendador opcional de medicamentos: até 40 notificações nos próximos 30 dias, reconciliação de mudanças e confirmação exclusivamente manual. A interface SoftCare oferece modo discreto por padrão e diagnóstico de permissões. **Ainda não é uma versão com alarmes clinicamente validados.** Consulte [o plano de testes CP06](docs/34-cp06-alarmes-locais-android.md). O fechamento completo do app por várias semanas pode deixar a janela sem renovação.
