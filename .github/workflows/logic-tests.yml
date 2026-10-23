@@ -1,27 +1,28 @@
-name: KAlarm · Testes locais de lógica e SQLite
+name: KAlarm · Testes e TypeScript
 on:
+  pull_request:
   push:
     branches: [main]
-  pull_request:
 jobs:
-  logic:
+  logic-and-database:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: {node-version: '22'}
+        with:
+          node-version: '22'
       - uses: actions/setup-python@v5
-        with: {python-version: '3.12'}
-      - name: Recorrências
+        with:
+          python-version: '3.12'
+      - name: Testar motor de doses
         run: node --experimental-strip-types --test proofs/scheduling/tests/*.test.ts
-      - name: Avisos e reconciliação
+      - name: Testar alarmes
         run: node --experimental-strip-types --test proofs/reminders/tests/*.test.ts
-      - name: SQLite
+      - name: Testar SQLite
         run: python -m unittest discover -s proofs/sqlite/tests -v
-      - name: SoftCare
+      - name: Verificar SoftCare
         run: node mobile/scripts/verify-softcare-icons.cjs
-
-  expo-typecheck:
+  expo-typescript:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -30,11 +31,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
-          version: 10.34.7
+          version: 10.9.2
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Instalar dependências Expo
+      - name: Instalar dependências
         run: pnpm install --no-frozen-lockfile
-      - name: Verificar tipos TypeScript
+      - name: Checar Expo
+        run: pnpm exec expo install --check
+      - name: TypeScript
         run: pnpm run check
