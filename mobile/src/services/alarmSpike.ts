@@ -13,9 +13,8 @@ export type AlarmDiagnostic = {
 export async function readDiagnostic():Promise<AlarmDiagnostic> {
   const permission=await Notifications.getPermissionsAsync();
   const allowed=permission.granted || permission.ios?.status===Notifications.IosAuthorizationStatus.PROVISIONAL;
-  const exact=Platform.OS==='android'
-    ? (await Notifications.getExactAlarmPermissionsAsync()).granted
-    : null;
+  // SDK 57 does not expose the Android exact-alarm permission APIs.
+  const exact:null=null;
   const pending=(await Notifications.getAllScheduledNotificationsAsync()).filter(item=>item.content.data?.kind==='kalarm-spike');
   return { notificationPermission:allowed, exactAlarmPermission:exact, pendingTests:pending.length,
     pendingIds:pending.map(item=>item.identifier), collectedAt:new Date().toLocaleString('pt-BR') };
@@ -34,11 +33,6 @@ export async function askForNotifications():Promise<boolean> {
   return permission.granted || permission.ios?.status===Notifications.IosAuthorizationStatus.PROVISIONAL;
 }
 
-export async function askForExactAlarm(){
-  if(Platform.OS!=='android') return;
-  await Notifications.requestExactAlarmPermissionsAsync();
-}
-
 export async function scheduleTestAlert():Promise<{id:string;mode:'alarmClock'|'bestEffort';time:string}> {
   const current=await readDiagnostic();
   if(!current.notificationPermission) throw new Error('Ative a permissão de notificações antes do teste.');
@@ -48,7 +42,7 @@ export async function scheduleTestAlert():Promise<{id:string;mode:'alarmClock'|'
       sound:'default', vibrationPattern:[0,250,150,250],
     });
   }
-  const mode: 'alarmClock'|'bestEffort'=current.exactAlarmPermission===true?'alarmClock':'bestEffort';
+  const mode: 'alarmClock'|'bestEffort'='bestEffort';
   const time=new Date(Date.now()+60_000);
   const id=await Notifications.scheduleNotificationAsync({
     content:{
@@ -61,7 +55,7 @@ export async function scheduleTestAlert():Promise<{id:string;mode:'alarmClock'|'
     trigger:{
       type:Notifications.SchedulableTriggerInputTypes.DATE,
       date:time,
-      ...(Platform.OS==='android'?{channelId:TEST_CHANNEL,delivery:mode}:{}),
+      ...(Platform.OS==='android'?{channelId:TEST_CHANNEL}:{}),
     },
   });
   return {id,mode,time:time.toLocaleString('pt-BR')};
