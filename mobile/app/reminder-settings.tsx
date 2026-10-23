@@ -4,7 +4,7 @@ import {useFocusEffect,useRouter} from 'expo-router';
 import {useSQLiteContext} from 'expo-sqlite';
 import {Page,Panel,Heading,Body,Action,StatusLine} from '../src/components/ui';
 import {updateReminderSettings} from '../src/data/reminderSettings';
-import {readReminderDiagnostic,reconcileMedicationReminders,requestMedicationPermission,requestMedicationExactPermission,type ReminderDiagnostic} from '../src/services/medicationReminders';
+import {readReminderDiagnostic,reconcileMedicationReminders,requestMedicationPermission,type ReminderDiagnostic} from '../src/services/medicationReminders';
 
 export default function ReminderSettingsScreen(){
  const db=useSQLiteContext(),router=useRouter();
@@ -23,7 +23,7 @@ export default function ReminderSettingsScreen(){
   <Panel tone="mint"><Heading>Estado dos lembretes</Heading>
    <StatusLine ok={status?.enabled??null} title="Lembretes" details={status?.enabled?'Ativados por você':'Desativados por padrão'}/>
    <StatusLine ok={status?.permitted??null} title="Permissão de notificação" details={status?.permitted?'Concedida':'Necessária para avisos'}/>
-   <StatusLine ok={status?.exact??null} title="Permissão de alarme exato" details={Platform.OS==='android'?(status?.exact?'Disponível':'Podem ocorrer atrasos'):'Não aplicável ao Android neste aparelho'}/>
+   <StatusLine ok={status?.exact??null} title="Alarme exato" details={Platform.OS==='android'?'Não disponível no SDK 57. Avisos podem sofrer atrasos.':'Não verificado nesta versão.'}/>
    <StatusLine ok={status?.enabled&&status.permitted?(status.missing||status.obsolete?false:status.expected?true:null):null}
     title="Programação no aparelho" details={status?.missing||status?.obsolete?'Há avisos faltando, duplicados ou obsoletos. Atualize a programação.':'A fila é verificada, mas a entrega depende do Android.'}/>
    <Body muted>Esperados: {status?.expected??'–'} · correspondentes: {status?.matched??'–'} · faltantes: {status?.missing??'–'} · obsoletos: {status?.obsolete??'–'}.</Body>
@@ -42,10 +42,6 @@ export default function ReminderSettingsScreen(){
     await updateReminderSettings(db,{enabled:true});await reconcileMedicationReminders(db);
    })}/>
    {!status?.permitted?<Action label="Abrir configurações do aplicativo" icon="settings" secondary onPress={()=>void Linking.openSettings()}/>:null}
-   {Platform.OS==='android'&&status?.enabled&&status.exact===false?<Action label="Configurar alarme exato no Android" icon="clock" secondary onPress={()=>{
-    void requestMedicationExactPermission().then(()=>refresh()).catch(e=>setMessage(String(e)));
-    setMessage('Confira a permissão no Android. O KAlarm revisará a programação ao voltar.');
-   }}/>:null}
   </Panel>
   <Panel tone="blue"><Heading>Privacidade da notificação</Heading>
    <Body muted>O padrão é discreto: ocultar nome e dose do aviso para não expor informações na tela bloqueada.</Body>
