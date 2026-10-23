@@ -37,7 +37,11 @@ jobs:
           node-version: '22'
       - name: Instalar dependências
         run: pnpm install --no-frozen-lockfile
+      - name: Validar arquivo de entrada e resolução do Router
+        run: pnpm run check:entry
       - name: Checar Expo
         run: pnpm exec expo install --check
       - name: TypeScript
         run: pnpm run check
+      - name: Compilar bundle JavaScript Android (Metro)
+        run: pnpm exec expo export --platform android --output-dir .expo-ci-bundle
