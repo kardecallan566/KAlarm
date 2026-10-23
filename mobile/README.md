@@ -1,33 +1,55 @@
-# KAlarm — Aplicativo Expo (React Native)
+# KAlarm — Expo e pnpm
 
-Projeto Android/iOS com Expo Router, SQLite, notificações locais e o design SoftCare.
-O diretório **mobile/** é a raiz do aplicativo: execute os comandos dentro dele.
+Aplicativo React Native + Expo SDK 57 com identidade SoftCare, SQLite e lembretes locais.
 
-## Instalação com pnpm
+## Ambiente recomendado: Development Build
 
-```bash
-# A partir da raiz do repositório KAlarm
-git switch fix/cp07-expo-router-entry-pnpm
+O KAlarm **importa `expo-notifications` na inicialização**. Uma falha conhecida do Expo Go 57 no Android podia encerrar o aplicativo imediatamente durante esse import. Por isso, **não considere Expo Go um ambiente válido para confirmar que os alarmes estão funcionando**.
+
+```powershell
+git switch fix/cp08-expo-go-stability
 cd mobile
-corepack enable
 pnpm install
-pnpm run check:entry
 pnpm exec expo install --check
-pnpm start:clear
+pnpm run check:entry
+pnpm run android
 ```
 
-Para compilar e instalar no Android conectado, execute `pnpm run android` (requer SDK Android/JDK e dispositivo ou emulador).
+O comando `pnpm run android` compila uma Development Build usando seu Android SDK e instala o app no dispositivo/emulador. Para iniciar o servidor posteriormente:
 
-## Correção do erro “Cannot resolve entry file”
+```powershell
+pnpm start:dev
+```
 
-- `package.json` aponta para um **arquivo local real** (`./index.js`), que importa `expo-router/entry`.
-- O `pnpm-workspace.yaml` utiliza `nodeLinker: hoisted` para reduzir incompatibilidades de resolução no Metro.
-- `pnpm run check:entry` identifica dependências ausentes com orientação prática.
-- Se `expo-router/entry` não for encontrado, execute `pnpm install` **dentro de `mobile/`** e verifique `pnpm exec expo install --check`.
-- Se você instalou dependências de outra branch com estrutura diferente, remova apenas `mobile/node_modules` e faça uma instalação nova com `pnpm install`; depois `pnpm start:clear`.
+## Para isolar falhas do Expo Go (somente inspeção de UI)
 
-### Observações
+```powershell
+pnpm start:go:clear
+```
 
-Notificações ainda exigem testes Android em dispositivo real. A execução do Metro não comprova a entrega pontual de alarmes nem substitui uma build de desenvolvimento.
+Isso força o alvo Expo Go. Atualize ou instale a versão correspondente ao SDK 57 pelo [Expo Go Android](https://expo.dev/go?platform=android&sdkVersion=57). Se o app fechar durante a importação de notificações, **não tente contornar isso apagando o banco**; use a Development Build. O código de notificações da aplicação não está sendo desativado silenciosamente.
 
-Os ícones e assets estão descritos em [ASSETS-SOFTCARE.md](ASSETS-SOFTCARE.md).
+O comando `pnpm start` continua apontando para a Development Build, por escolha deliberada. `pnpm start:go` e `pnpm start:go:clear` são opções apenas para diagnóstico.
+
+## Identificar a falha
+
+Se o aplicativo ainda fechar:
+
+```powershell
+adb logcat -c
+# Abra o aplicativo, espere a falha e, depois:
+adb logcat -b crash -d
+```
+
+No terminal Metro, também confira erros de JavaScript. Em caso de erro `no such table` ou `SQLite`, utilize o erro mostrado pelo KAlarm e **não apague os dados para tentar corrigir automaticamente**.
+
+## Verificações
+
+```powershell
+pnpm run check:entry
+pnpm run check
+pnpm exec expo-doctor
+pnpm exec expo export --platform android --output-dir .expo-ci-bundle
+```
+
+As notificações dependem de permissões e de testes reais no Android; o bundle compilado não comprova entrega pontual.
