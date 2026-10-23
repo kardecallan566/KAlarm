@@ -14,8 +14,7 @@ export async function ensureMedicationChannel(){
 }
 export async function notificationPermissionGranted(){return allowed(await Notifications.getPermissionsAsync())}
 export async function requestMedicationPermission(){await ensureMedicationChannel();return allowed(await Notifications.requestPermissionsAsync())}
-export async function requestMedicationExactPermission(){if(Platform.OS==='android')await Notifications.requestExactAlarmPermissionsAsync()}
-async function exactPermission():Promise<boolean|null>{return Platform.OS==='android'?(await Notifications.getExactAlarmPermissionsAsync()).granted:null}
+async function exactPermission():Promise<boolean|null>{return null} // Não exposto por expo-notifications 57.
 async function ownedPending(){return (await Notifications.getAllScheduledNotificationsAsync()).filter(x=>x.content.data?.kind===MEDICATION_KIND)}
 const gates=new WeakMap<SQLiteDatabase,()=>Promise<ReminderDiagnostic>>();
 export function reconcileMedicationReminders(db:SQLiteDatabase):Promise<ReminderDiagnostic>{
@@ -54,7 +53,7 @@ async function runReconciliation(db:SQLiteDatabase):Promise<ReminderDiagnostic>{
    ...(Platform.OS==='android'?{priority:Notifications.AndroidNotificationPriority.HIGH}:{})
   },
   trigger:{type:Notifications.SchedulableTriggerInputTypes.DATE,date:new Date(event.plannedAtISO),
-   ...(Platform.OS==='android'?{channelId:MEDICATION_CHANNEL,delivery:mode}:{})}
+   ...(Platform.OS==='android'?{channelId:MEDICATION_CHANNEL}:{})}
  });
  const finalPending=await ownedPending(),byId=new Map(desired.map(x=>[x.id,x]));
  const stamp=new Date().toISOString(),seen=new Set<string>();
