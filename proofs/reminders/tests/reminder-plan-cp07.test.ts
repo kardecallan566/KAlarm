@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {makeReminderPlan,diffReminderPlan,auditReminderQueue,createReconcileGate} from '../../../mobile/src/services/reminderPlan.ts';
 const now=Date.UTC(2026,9,22,10,0);
 const sample=(id:string,minutes=20)=>({id,plannedAtISO:new Date(now+minutes*60000).toISOString(),localTime:'10:20',medicationName:'Fictício',quantity:'1',unit:'tablet'});
-test('reprograma ao conceder permissão de alarme exato',()=>{
+test('contrato futuro: modo de entrega diferente muda a assinatura (SDK 58+)',()=>{
  const [old]=makeReminderPlan([sample('a')],new Set(),now,false,40,'bestEffort');
  const [next]=makeReminderPlan([sample('a')],new Set(),now,false,40,'alarmClock');
  assert.notEqual(old.fingerprint,next.fingerprint);
