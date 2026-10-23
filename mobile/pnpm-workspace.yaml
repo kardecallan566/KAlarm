@@ -1,0 +1,4 @@
+# Compatibilidade de resolução de módulos do React Native/Expo usando pnpm.
+packages:
+  - .
+nodeLinker: hoisted
