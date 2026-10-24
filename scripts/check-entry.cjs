@@ -12,7 +12,7 @@ const entry = path.resolve(projectRoot, manifest.main || '');
 
 function fail(problem) {
   console.error('\n[KAlarm] ' + problem);
-  console.error('[KAlarm] Abra um terminal na pasta KAlarm/mobile e execute:');
+  console.error('[KAlarm] Abra o terminal na raiz do repositório KAlarm e execute:');
   console.error('  pnpm install');
   console.error('  pnpm run check:entry');
   console.error('  pnpm start:clear\n');

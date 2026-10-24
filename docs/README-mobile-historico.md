@@ -1,3 +1,5 @@
+> **ARQUIVO HISTÓRICO (antes do CP10).** O Expo agora está na raiz do KAlarm. Use o [README principal](../README.md) para os comandos atuais. O texto abaixo preserva as instruções anteriores para referência.
+
 # KAlarm — execução com pnpm (Expo SDK 57)
 
 ## Abrir especificamente no Android (sem navegador)
