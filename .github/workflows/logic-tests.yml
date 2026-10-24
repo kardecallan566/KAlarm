@@ -39,9 +39,23 @@ jobs:
         run: pnpm install --no-frozen-lockfile
       - name: Validar arquivo de entrada e resolução do Router
         run: pnpm run check:entry
+      - name: Testar isolamento do Expo Go
+        run: pnpm run test:go-mode
       - name: Checar Expo
         run: pnpm exec expo install --check
       - name: TypeScript
         run: pnpm run check
-      - name: Compilar bundle JavaScript Android (Metro)
+      - name: Compilar bundle JavaScript Android (Metro / Development Build)
         run: pnpm exec expo export --platform android --output-dir .expo-ci-bundle
+      - name: Compilar bundle Android com notificações isoladas (Expo Go)
+        env:
+          KALARM_EXPO_GO_SAFE: "1"
+          EXPO_PUBLIC_KALARM_GO_SAFE: "1"
+          EXPO_PUBLIC_KALARM_SMOKE: "0"
+        run: pnpm exec expo export --platform android --output-dir .expo-ci-go-bundle
+      - name: Compilar diagnóstico mínimo do Expo Go
+        env:
+          KALARM_EXPO_GO_SAFE: "1"
+          EXPO_PUBLIC_KALARM_GO_SAFE: "1"
+          EXPO_PUBLIC_KALARM_SMOKE: "1"
+        run: pnpm exec expo export --platform android --output-dir .expo-ci-smoke-bundle

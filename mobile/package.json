@@ -13,9 +13,14 @@
     "assets:check": "node scripts/verify-softcare-icons.cjs",
     "check:entry": "node scripts/check-entry.cjs",
     "start:clear": "pnpm run check:entry && expo start --dev-client --clear",
-    "start:go": "pnpm run check:entry && expo start --go",
-    "start:go:clear": "pnpm run check:entry && expo start --go --clear",
-    "start:dev": "pnpm run check:entry && expo start --dev-client"
+    "start:go": "pnpm run check:entry && node scripts/run-go.cjs",
+    "start:go:clear": "pnpm run check:entry && node scripts/run-go.cjs --clear",
+    "start:dev": "pnpm run check:entry && expo start --dev-client",
+    "start:go:safe": "pnpm run check:entry && node scripts/run-go.cjs --clear",
+    "start:smoke": "pnpm run check:entry && node scripts/run-go.cjs --smoke --clear",
+    "test:go-mode": "node --test scripts/go-mode.test.cjs",
+    "start:android:go:safe": "pnpm run check:entry && node scripts/run-go.cjs --android --clear",
+    "start:android:dev": "pnpm run check:entry && expo start --dev-client --android --clear"
   },
   "dependencies": {
     "expo": "~57.0.31",
