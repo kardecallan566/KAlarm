@@ -4,7 +4,7 @@ import sqlite3
 import unittest
 from pathlib import Path
 
-SCHEMA = Path(__file__).resolve().parents[3] / 'mobile/src/data/schema.ts'
+SCHEMA = Path(__file__).resolve().parents[3] / 'src/data/schema.ts'
 
 class MobileSchemaTest(unittest.TestCase):
     def setUp(self):
