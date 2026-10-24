@@ -1,5 +1,29 @@
 # KAlarm — execução com pnpm (Expo SDK 57)
 
+## Abrir especificamente no Android (sem navegador)
+
+No terminal do computador, **abra a pasta `KAlarm/mobile` antes de executar o Expo**. O servidor Metro pode exibir um endereço HTTP local; isso não transforma o aplicativo em site.
+
+### Expo Go 57 — apenas interface e SQLite
+
+```powershell
+pnpm start:android:go:safe
+```
+
+Com o celular conectado por USB (e `adb devices` mostrando o dispositivo) ou com um emulador aberto, o Expo tentará abrir diretamente no Android. Se usar um celular **sem USB**, execute `pnpm start:go:safe` e leia o QR Code pelo aplicativo Expo Go. O Expo Go instalado deve ser compatível com o **SDK 57**.
+
+### KAlarm instalado no Android — com módulos nativos
+
+```powershell
+pnpm run android
+# Na próxima execução, com o KAlarm já instalado:
+pnpm start:android:dev
+```
+
+Use `pnpm start:dev` se desejar somente o QR Code, sem exigir que `adb` encontre um dispositivo. A Development Build é a recomendada para alarmes. Pressionar **W** na CLI Expo abre intencionalmente a versão web, enquanto **A** seleciona Android.
+
+A forma correta de limpar o cache é `pnpm exec expo start --clear` (o subcomando `start` vem antes do argumento `--clear`).
+
 ## O Expo Go abre e fecha sozinho?
 
 Há bugs conhecidos na linha SDK 57 do Expo Go Android, inclusive um crash no import de `expo-notifications`. O KAlarm usava essa biblioteca logo na inicialização. Para localizar o problema, disponibilizamos **dois modos separados**:

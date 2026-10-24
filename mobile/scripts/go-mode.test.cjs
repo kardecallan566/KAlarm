@@ -59,3 +59,14 @@ test('Mock não simula permissões ou notificações reais', () => {
   assert.match(stub, /throw new Error\(warning\)/);
   assert.match(stub, /return \[\];/);
 });
+
+// Previne regressão: ambos os modos Android devem ser explícitos e nunca selecionar web.
+test('Os scripts de Android têm destinos nativos explícitos', () => {
+  const manifest = require('../package.json');
+  assert.match(manifest.scripts['start:android:go:safe'], /--android/);
+  assert.match(manifest.scripts['start:android:dev'], /--android/);
+  assert.doesNotMatch(manifest.scripts['start:android:dev'], /--web/);
+  const runner = fs.readFileSync(path.join(root, 'scripts/run-go.cjs'), 'utf8');
+  assert.match(runner, /process\.argv\.includes\('--android'\)/);
+  assert.match(runner, /\['--android'\]/);
+});

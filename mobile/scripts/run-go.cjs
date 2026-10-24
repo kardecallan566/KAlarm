@@ -4,6 +4,7 @@
 const { spawn } = require('node:child_process');
 
 const smoke = process.argv.includes('--smoke');
+const android = process.argv.includes('--android');
 const clear = process.argv.includes('--clear') || smoke;
 const env = {
   ...process.env,
@@ -17,7 +18,7 @@ console.log(smoke
   : '[KAlarm] Expo Go seguro: interface + SQLite; notificações desativadas somente neste modo.');
 console.log('[KAlarm] Para alarmes reais: pnpm run android e pnpm start:dev.');
 
-const args = ['exec', 'expo', 'start', '--go', ...(clear ? ['--clear'] : [])];
+const args = ['exec', 'expo', 'start', '--go', ...(clear ? ['--clear'] : []), ...(android ? ['--android'] : [])];
 const child = spawn(process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm', args, {
   env,
   stdio: 'inherit',
