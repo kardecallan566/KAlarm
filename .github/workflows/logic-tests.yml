@@ -21,12 +21,11 @@ jobs:
       - name: Testar SQLite
         run: python -m unittest discover -s proofs/sqlite/tests -v
       - name: Verificar SoftCare
-        run: node mobile/scripts/verify-softcare-icons.cjs
+        run: node scripts/verify-softcare-icons.cjs
+      - name: Verificar estrutura única na raiz
+        run: node --test scripts/project-layout.test.cjs
   expo-typescript:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: mobile
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -41,6 +40,8 @@ jobs:
         run: pnpm run check:entry
       - name: Testar isolamento do Expo Go
         run: pnpm run test:go-mode
+      - name: Validar layout da raiz
+        run: pnpm run test:layout
       - name: Checar Expo
         run: pnpm exec expo install --check
       - name: TypeScript

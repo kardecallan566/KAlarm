@@ -20,7 +20,9 @@
     "start:smoke": "pnpm run check:entry && node scripts/run-go.cjs --smoke --clear",
     "test:go-mode": "node --test scripts/go-mode.test.cjs",
     "start:android:go:safe": "pnpm run check:entry && node scripts/run-go.cjs --android --clear",
-    "start:android:dev": "pnpm run check:entry && expo start --dev-client --android --clear"
+    "start:android:dev": "pnpm run check:entry && expo start --dev-client --android --clear",
+    "test:layout": "node --test scripts/project-layout.test.cjs",
+    "check:project": "pnpm run check:entry && pnpm run test:layout && pnpm run assets:check && pnpm run check"
   },
   "dependencies": {
     "expo": "~57.0.31",

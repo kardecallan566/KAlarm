@@ -3,7 +3,7 @@ import re
 import sqlite3
 import unittest
 from pathlib import Path
-SOURCE=Path(__file__).resolve().parents[3]/'mobile/src/data/schema.ts'
+SOURCE=Path(__file__).resolve().parents[3]/'src/data/schema.ts'
 class ReminderMigrationTests(unittest.TestCase):
  def setUp(self):
   blocks=re.findall(r'await db\.execAsync\(`(.*?)`\);',SOURCE.read_text(),re.S)

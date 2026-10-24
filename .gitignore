@@ -1,0 +1,17 @@
+# Expo / React Native (raiz do projeto)
+node_modules/
+.expo/
+dist/
+web-build/
+.expo-ci-*/
+android/
+ios/
+*.apk
+*.aab
+*.log
+pnpm-debug.log*
+.env
+.env.*
+!.env.example
+coverage/
+.DS_Store
