@@ -22,7 +22,10 @@ test('Raiz contém um projeto Expo completo', () => {
 test('Assets continuam acessíveis a partir da raiz', () => {
   const config = require('../app.json').expo;
   assert.ok(exists(config.icon), 'Icone principal indisponivel');
-  assert.ok(exists(config.splash.image), 'Splash indisponivel');
+  const splashPlugin = config.plugins.find(x => Array.isArray(x) && x[0] === 'expo-splash-screen');
+  assert.ok(splashPlugin, 'Plugin expo-splash-screen ausente');
+  assert.ok(exists(splashPlugin[1].image), 'Splash indisponivel');
+  assert.equal(splashPlugin[1].backgroundColor, '#F7FAF8');
   assert.ok(exists(config.android.adaptiveIcon.foregroundImage), 'Adaptive icon indisponivel');
   assert.ok(exists('assets/softcare/manifest.json'));
 });
