@@ -9,7 +9,7 @@
     "ios": "expo run:ios",
     "check": "tsc --noEmit",
     "doctor": "expo-doctor",
-    "build:android": "eas build --platform android --profile development",
+    "build:android": "pnpm dlx eas-cli build --platform android --profile development",
     "assets:check": "node scripts/verify-softcare-icons.cjs",
     "check:entry": "node scripts/check-entry.cjs",
     "start:clear": "pnpm run check:entry && expo start --go --clear",
@@ -44,8 +44,7 @@
   "devDependencies": {
     "@types/react": "~19.3.0",
     "typescript": "~6.0.3",
-    "expo-doctor": "*",
-    "eas-cli": "*"
+    "expo-doctor": "*"
   },
   "packageManager": "pnpm@10.34.7"
 }
