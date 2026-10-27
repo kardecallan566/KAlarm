@@ -56,3 +56,15 @@ test('O workflow GitHub Actions executa pnpm e Expo na raiz', () => {
   assert.match(yml, /pnpm install/);
   assert.match(yml, /expo export --platform android/);
 });
+
+test('Manifesto usa Expo SDK 58, React Native 0.88 e React 19.3', () => {
+  const pkg = require('../package.json');
+  assert.match(pkg.dependencies.expo, /58/);
+  assert.equal(pkg.dependencies.react, '19.3.0');
+  assert.equal(pkg.dependencies['react-native'], '0.88.0');
+  assert.match(pkg.dependencies['expo-router'], /58/);
+  assert.match(pkg.dependencies['expo-sqlite'], /58/);
+  assert.match(pkg.dependencies['expo-notifications'], /58/);
+  assert.match(pkg.scripts.start, /--go/);
+  assert.match(pkg.scripts['start:dev'], /--dev-client/);
+});
