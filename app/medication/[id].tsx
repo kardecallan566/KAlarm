@@ -12,10 +12,24 @@ import {localizedDay} from '../../src/i18n/date';
 export default function MedicationDetail(){
  const {id}=useLocalSearchParams<{id:string}>();const router=useRouter();const db=useSQLiteContext();const {t,language}=useLanguage();const [med,setMed]=useState<Medication|null>(null);
  useFocusEffect(useCallback(()=>{let active=true;getMedication(db,id).then(x=>{if(active)setMed(x)});return()=>{active=false}},[id,db]));
- const today=localToday();const list=med?med.schedules.flatMap(s=>previewWindow(s,today,offsetDate(today,14))).sort((a,b)=>a.plannedAtISO.localeCompare(b.plannedAtISO)):[];
+ const today=localToday();
+ const list=med?med.schedules.flatMap(s=>previewWindow(s,today,offsetDate(today,14))).sort((a,b)=>a.plannedAtISO.localeCompare(b.plannedAtISO)):[];
+ const archive=()=>{
+  if(!med)return;
+  Alert.alert(t('medDetail.archiveTitle'),t('medDetail.archiveBody'),[
+   {text:t('common.cancel'),style:'cancel'},
+   {text:t('medDetail.archive'),onPress:async()=>{
+    await setArchived(db,med.id,true);
+    try{await reconcileMedicationReminders(db)}catch(_error){Alert.alert(t('medDetail.archived'),t('reminders.syncWarning'))}
+    router.replace('/(tabs)/medicines');
+   }}
+  ]);
+ };
  return <Page title={med?.name??t('medDetail.title')} subtitle={med?.strengthLabel??t('medDetail.subtitle')}>
-  <Panel tone="mint"><Heading>{t('medDetail.upcoming')}</Heading>{list.length?list.slice(0,18).map(x=><Body key={x.id}>{localizedDay(x.localDate,language)} {language==='pt-BR'?'às':'at'} {x.localTime} — {localizedQuantity(x.quantity,x.unit,language)}</Body>):<Body muted>{t('medDetail.noUpcoming')}</Body>}</Panel>
+  <Panel tone="mint"><Heading>{t('medDetail.upcoming')}</Heading>
+   {list.length?list.slice(0,18).map(x=><Body key={x.id}>{localizedDay(x.localDate,language)} {language==='pt-BR'?'às':'at'} {x.localTime} — {localizedQuantity(x.quantity,x.unit,language)}</Body>):<Body muted>{t('medDetail.noUpcoming')}</Body>}
+  </Panel>
   {med&&!med.archived?<><Action label={t('medDetail.edit')} icon="edit" onPress={()=>router.push({pathname:'/medication/new',params:{id:med.id}})}/>
-   <Action label={t('medDetail.archive')} secondary icon="pause" onPress={()=>Alert.alert(t('medDetail.archiveTitle'),t('medDetail.archiveBody'),[{text:t('common.cancel'),style:'cancel'},{text:t('medDetail.archive'),onPress:async()=>{await setArchived(db,med.id,true);try{await reconcileMedicationReminders(db)}catch(_error){Alert.alert(t('medDetail.archived'),t('reminders.syncWarning'))}router.replace('/(tabs)/medicines')}}])}/>:null}
+   <Action label={t('medDetail.archive')} secondary icon="pause" onPress={archive}/></>:null}
  </Page>;
 }
