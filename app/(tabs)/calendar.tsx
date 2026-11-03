@@ -4,7 +4,8 @@ import {useSQLiteContext} from 'expo-sqlite';
 import {Page,Panel,Heading,Body} from '../../src/components/ui';
 import {SoftCareIcon} from '../../src/components/icons/SoftCareIcon';
 import {listMedications,upcomingForMedications,getConfirmations} from '../../src/data/medications';
-import {localToday,offsetDate,formatDay} from '../../src/core/dates';
+import {localToday,offsetDate} from '../../src/core/dates';
+import {localizedDay} from '../../src/i18n/date';
 import {useLanguage} from '../../src/i18n/LanguageProvider';
 import {localizedQuantity} from '../../src/i18n/quantity';
 import type {Occurrence} from '../../src/core/scheduling';
@@ -15,6 +16,6 @@ export default function Calendar(){
  const days=Array.from(new Set(list.map(x=>x.localDate)));
  return <Page title={t('calendar.title')} subtitle={t('calendar.subtitle')}>
   {error?<Panel tone="peach"><Body>{error}</Body></Panel>:null}
-  {days.length===0?<Panel tone="blue"><SoftCareIcon name="weekly" size={76}/><Heading>{t('calendar.emptyTitle')}</Heading><Body muted>{t('calendar.emptyBody')}</Body></Panel>:days.map(day=><Panel key={day} tone="blue"><Heading>{formatDay(day)}</Heading>{list.filter(x=>x.localDate===day).map(x=><Body key={x.id}>• {x.localTime} — {x.medicationName} — {localizedQuantity(x.quantity,x.unit,language)}{confirmed.has(x.id)?' · '+t('calendar.confirmed'):''}</Body>)}</Panel>)}
+  {days.length===0?<Panel tone="blue"><SoftCareIcon name="weekly" size={76}/><Heading>{t('calendar.emptyTitle')}</Heading><Body muted>{t('calendar.emptyBody')}</Body></Panel>:days.map(day=><Panel key={day} tone="blue"><Heading>{localizedDay(day,language)}</Heading>{list.filter(x=>x.localDate===day).map(x=><Body key={x.id}>• {x.localTime} — {x.medicationName} — {localizedQuantity(x.quantity,x.unit,language)}{confirmed.has(x.id)?' · '+t('calendar.confirmed'):''}</Body>)}</Panel>)}
  </Page>;
 }
