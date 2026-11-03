@@ -7,7 +7,7 @@ import { SoftCareIcon } from '../components/icons/SoftCareIcon';
 import { colors as c } from '../theme';
 import type { DayPlan, Recurrence, Schedule, Unit, Weekday } from '../core/scheduling';
 import { previewOccurrences } from '../core/scheduling';
-import { deviceTimezone, formatDay, localToday, offsetDate, readableQuantity } from '../core/dates';
+import { deviceTimezone, localToday, offsetDate } from '../core/dates';
 import { DayEditor, NO_DOSE, newDay } from './DayEditor';
 import { getMedication, saveMedication } from '../data/medications';
 import { reconcileMedicationReminders } from '../services/medicationReminders';
