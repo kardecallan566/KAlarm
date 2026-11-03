@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, ScrollView, Text, View, useWindowDimensions from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { colors as c } from '../theme';
@@ -12,7 +12,7 @@ export function Page({title, subtitle, children, showSettingsButton=true}:{title
     <ScrollView contentContainerStyle={{ padding:width<360?14:20, paddingBottom:45, width:'100%', maxWidth:1040, alignSelf:'center' }} keyboardShouldPersistTaps="handled">
       <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:12}}>
         <Text accessibilityRole="header" style={{ color:c.ink, fontSize:width<360?25:30, fontWeight:'800', letterSpacing:-0.7,flex:1 }}>{title}</Text>
-        {showSettingsButton?<Pressable accessibilityRole="button" accessibilityLabel={t('common.settingsAccessibility')} onPress={()=>router.push('/settings')} hitSlop={8} style={({pressed})=>({width:46,height:46,borderRadius:16,backgroundColor:c.surface,borderColor:c.border,borderWidth:1,alignItems:'center',justifyContent:'center',opacity:pressed?.75:1})}><SoftCareIcon name="settings" size={27}/></Pressable>:null}
+        {showSettingsButton?<Pressable accessibilityRole="button" accessibilityLabel={t('common.settingsAccessibility')} onPress={()=>router.push('/settings')} hitSlop={8} style={({pressed})=>({width:46,height:46,borderRadius:16,backgroundColor:c.surface,borderColor:c.border,borderWidth:1,alignItems:'center',justifyContent:'center',opacity:pressed?0.75:1})}><SoftCareIcon name="settings" size={27}/></Pressable>:null}
       </View>
       {subtitle ? <Text style={{ color:c.muted, fontSize:16, lineHeight:24, marginTop:6, marginBottom:23 }}>{subtitle}</Text>: <View style={{height:18}}/>}
       {children}
