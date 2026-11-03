@@ -1,6 +1,6 @@
 {
   "name": "kalarm-mobile",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "main": "expo-router/entry",
   "scripts": {
@@ -24,7 +24,8 @@
     "expo-status-bar": "*",
     "react-native-safe-area-context": "*",
     "react-native-screens": "*",
-    "react-native-svg": "*"
+    "react-native-svg": "*",
+    "expo-sqlite": "*"
   },
   "devDependencies": {
     "@types/react": "~19.2.0",
