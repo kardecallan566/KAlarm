@@ -1,15 +1,33 @@
-# KAlarm — versão mobile Expo (SoftCare v6)
+# KAlarm — Aplicativo Expo (React Native)
 
-Aplicativo React Native / Expo para lembretes de medicamentos. Esta fase integra a primeira identidade visual completa com ícone oficial KAlarm, 30 ícones ilustrados, navegação responsiva e tela de diagnóstico de alarmes Android.
+Projeto Android/iOS com Expo Router, SQLite, notificações locais e o design SoftCare.
+O diretório **mobile/** é a raiz do aplicativo: execute os comandos dentro dele.
 
-## Como executar
+## Instalação com pnpm
+
 ```bash
-corepack pnpm install
-corepack pnpm exec expo install --fix
-corepack pnpm exec expo-doctor
-corepack pnpm start
+# A partir da raiz do repositório KAlarm
+git switch fix/cp07-expo-router-entry-pnpm
+cd mobile
+corepack enable
+pnpm install
+pnpm run check:entry
+pnpm exec expo install --check
+pnpm start:clear
 ```
 
-Para validar notificações no Android use development build, não confie só no Expo Go. A primeira integração do mecanismo de dosagens, cadastro e SQLite ainda está pendente. O motor isolado e seus testes continuam nos diretórios do projeto completo.
+Para compilar e instalar no Android conectado, execute `pnpm run android` (requer SDK Android/JDK e dispositivo ou emulador).
 
-Consulte [ASSETS-SOFTCARE.md](ASSETS-SOFTCARE.md) para os 30 ícones e os assets do ícone adaptativo. No app, abra **Início > Ver biblioteca de ícones**.
+## Correção do erro “Cannot resolve entry file”
+
+- `package.json` aponta para um **arquivo local real** (`./index.js`), que importa `expo-router/entry`.
+- O `pnpm-workspace.yaml` utiliza `nodeLinker: hoisted` para reduzir incompatibilidades de resolução no Metro.
+- `pnpm run check:entry` identifica dependências ausentes com orientação prática.
+- Se `expo-router/entry` não for encontrado, execute `pnpm install` **dentro de `mobile/`** e verifique `pnpm exec expo install --check`.
+- Se você instalou dependências de outra branch com estrutura diferente, remova apenas `mobile/node_modules` e faça uma instalação nova com `pnpm install`; depois `pnpm start:clear`.
+
+### Observações
+
+Notificações ainda exigem testes Android em dispositivo real. A execução do Metro não comprova a entrega pontual de alarmes nem substitui uma build de desenvolvimento.
+
+Os ícones e assets estão descritos em [ASSETS-SOFTCARE.md](ASSETS-SOFTCARE.md).
