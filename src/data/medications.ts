@@ -1,6 +1,7 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 import type { Schedule, Recurrence, Unit, Occurrence } from '../core/scheduling';
 import { previewWindow, offsetDate, localToday } from '../core/dates';
+import { scheduleTransitionDates } from '../core/scheduleTransitions';
 import { previewOccurrences, normalizeQuantity } from '../core/scheduling';
 
 export type Medication = {
@@ -16,13 +17,6 @@ type MedicationRow = {id:string;name:string;form:Unit;strength_label:string|null
 type ScheduleRow = {id:string;medication_id:string;version:number;timezone:string;start_date:string;end_date:string|null;effective_from:string;effective_until:string|null;recurrence_json:string;overrides_json:string};
 const newId=():string=>`${Date.now().toString(36)}-${Math.random().toString(36).slice(2,11)}`;
 const now=()=>new Date().toISOString();
-
-/** Dates for a schedule transition: a new treatment starts today; an edit starts tomorrow. */
-export function scheduleTransitionDates(today:string, editing:boolean):{startDate:string;previousEffectiveUntil?:string}{
-  return editing
-    ?{startDate:offsetDate(today,1),previousEffectiveUntil:offsetDate(today,-1)}
-    :{startDate:today};
-}
 
 function fromRow(row:ScheduleRow):Schedule {
   return {id:row.id,medicationId:row.medication_id,version:row.version,timezone:row.timezone,
