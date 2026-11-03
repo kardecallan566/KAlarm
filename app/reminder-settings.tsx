@@ -26,7 +26,7 @@ export default function ReminderSettingsScreen(){
   <Panel tone="mint"><Heading>Estado dos lembretes</Heading>
    <StatusLine ok={status?.enabled??null} title="Lembretes" details={status?.enabled?'Ativados por você':'Desativados por padrão'}/>
    <StatusLine ok={status?.permitted??null} title="Permissão de notificação" details={status?.permitted?'Concedida':'Necessária para avisos'}/>
-   <StatusLine ok={status?.exact??null} title="Alarme exato" details={Platform.OS==='android'?'Não disponível no SDK 57. Avisos podem sofrer atrasos.':'Não verificado nesta versão.'}/>
+   <StatusLine ok={status?.exact??null} title="Alarme exato" details={Platform.OS==='android'?'Não disponível no SDK 58. Avisos podem sofrer atrasos.':'Não verificado nesta versão.'}/>
    <StatusLine ok={status?.enabled&&status.permitted?(status.missing||status.obsolete?false:status.expected?true:null):null}
     title="Programação no aparelho" details={status?.missing||status?.obsolete?'Há avisos faltando, duplicados ou obsoletos. Atualize a programação.':'A fila é verificada, mas a entrega depende do Android.'}/>
    <Body muted>Esperados: {status?.expected??'–'} · correspondentes: {status?.matched??'–'} · faltantes: {status?.missing??'–'} · obsoletos: {status?.obsolete??'–'}.</Body>
@@ -48,6 +48,7 @@ export default function ReminderSettingsScreen(){
   </Panel>
   <Panel tone="blue"><Heading>Privacidade da notificação</Heading>
    <Body muted>O padrão é discreto: ocultar nome e dose do aviso para não expor informações na tela bloqueada.</Body>
+   <Body muted>{status?.showDetails?'Exemplo detalhado: KAlarm · Medicamento | Dose: 1 comprimido | Horário: 15:30':'Exemplo discreto: KAlarm · Hora do medicamento | Aviso às 15:30. Abra o KAlarm para consultar a dose.'}</Body>
    <View style={{height:12}}/>
    <Action secondary icon="edit" disabled={busy} label={status?.showDetails?'Ocultar nome e dose':'Mostrar nome e dose no aviso'} onPress={()=>void work(async()=>{
     await updateReminderSettings(db,{showDetails:!status?.showDetails});
