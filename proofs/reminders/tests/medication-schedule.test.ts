@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {previewOccurrences} from '../../../src/core/scheduling.ts';
-import {scheduleTransitionDates} from '../../../src/data/medications.ts';
+import {scheduleTransitionDates} from '../../../src/core/scheduleTransitions.ts';
 import {makeReminderPlan} from '../../../src/services/reminderPlan.ts';
 import type {Schedule} from '../../../src/core/scheduling.ts';
 
