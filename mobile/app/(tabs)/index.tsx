@@ -4,6 +4,7 @@ import { useFocusEffect,useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { Action, Body, Heading, Page, Panel } from '../../src/components/ui';
 import { SoftCareIcon } from '../../src/components/icons/SoftCareIcon';
+import { reconcileMedicationReminders } from '../../src/services/medicationReminders';
 import { listMedications,upcomingForMedications,getConfirmations,confirmOccurrence } from '../../src/data/medications';
 import { localToday,offsetDate,readableQuantity,formatDay } from '../../src/core/dates';
 import { colors as c } from '../../src/theme';
@@ -22,7 +23,7 @@ export default function Home(){
   const next=todo[0];
   const take=async(item:DisplayOccurrence)=>{
     if(busy)return;setBusy(item.id);
-    try{const inserted=await confirmOccurrence(db,item,item.medicationName);await refresh();if(!inserted)Alert.alert('Já confirmado','Esta tomada já foi registrada.');}
+    try{const inserted=await confirmOccurrence(db,item,item.medicationName);await refresh();try{await reconcileMedicationReminders(db)}catch(_error){Alert.alert('Tomada registrada','O registro foi salvo, mas os avisos precisam ser conferidos em Meus alarmes.')}if(!inserted)Alert.alert('Já confirmado','Esta tomada já foi registrada.');}
     catch(e){Alert.alert('Não foi possível confirmar',String(e));}
     finally{setBusy('');}
   };
@@ -36,11 +37,11 @@ export default function Home(){
     <Heading>Tomadas previstas</Heading>
     {events.length===0?<Panel><SoftCareIcon name="calendar" size={60}/><Body muted>Nenhuma dose programada nos próximos dias.</Body></Panel>:events.slice(0,12).map(item=>{
       const isConfirmed=confirmed.has(item.id);const isDue=new Date(item.plannedAtISO).getTime()<=now;
-      return <Panel key={item.id}><View style={{flexDirection:'row',alignItems:'center',gap:12}}><SoftCareIcon name={isConfirmed?'taken':isDue?'pending':'alarm'} size={46}/><View style={{flex:1}}><Text style={{fontSize:17,fontWeight:'800',color:c.ink}}>{item.medicationName}</Text><Body>{formatDay(item.localDate)} · {item.localTime}</Body><Body>{readableQuantity(item.quantity,item.unit)}</Body><Text style={{color:c.muted,fontSize:13}}>{isConfirmed?'Confirmada por você':isDue?'Horário atingido, ainda não confirmada':'Agendada (sem alarme automático)'}</Text></View></View>
+      return <Panel key={item.id}><View style={{flexDirection:'row',alignItems:'center',gap:12}}><SoftCareIcon name={isConfirmed?'taken':isDue?'pending':'alarm'} size={46}/><View style={{flex:1}}><Text style={{fontSize:17,fontWeight:'800',color:c.ink}}>{item.medicationName}</Text><Body>{formatDay(item.localDate)} · {item.localTime}</Body><Body>{readableQuantity(item.quantity,item.unit)}</Body><Text style={{color:c.muted,fontSize:13}}>{isConfirmed?'Confirmada por você':isDue?'Horário atingido, ainda não confirmada':'Dose prevista · confira os alarmes em Ajustes'}</Text></View></View>
         {!isConfirmed&&isDue?<View style={{marginTop:14}}><Action label={busy===item.id?'Registrando...':'Confirmar que tomei'} icon="confirm" disabled={!!busy} onPress={()=>void take(item)}/></View>:null}
       </Panel>;
     })}
-    <Panel tone="blue"><Heading>Diagnóstico de alarmes</Heading><Body muted>As doses acima são calculadas a partir da sua rotina. O envio automático das notificações será integrado e validado em dispositivo real.</Body><View style={{height:10}}/><Action label="Testar notificações" secondary icon="alarm" onPress={()=>router.push('/alarm-test')}/></Panel>
+    <Panel tone="blue"><Heading>Lembretes de medicamentos</Heading><Body muted>Ative os alarmes e confira as permissões. Os avisos estão sujeitos às limitações do aparelho e precisam de testes reais.</Body><View style={{height:10}}/><Action label="Ativar e conferir alarmes" secondary icon="alarm" onPress={()=>router.push('/reminder-settings')}/></Panel>
     <Action label="Ver biblioteca de ícones" secondary icon="settings" onPress={()=>router.push('/icon-gallery')}/>
   </Page>;
 }

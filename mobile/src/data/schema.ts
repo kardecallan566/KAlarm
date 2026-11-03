@@ -4,7 +4,8 @@ import type { SQLiteDatabase } from 'expo-sqlite';
 export async function migrate(db: SQLiteDatabase): Promise<void> {
   await db.execAsync('PRAGMA foreign_keys = ON;');
   const row = await db.getFirstAsync<{user_version:number}>('PRAGMA user_version');
-  if ((row?.user_version ?? 0) >= 1) return;
+  if ((row?.user_version ?? 0) >= 2) return;
+  if ((row?.user_version ?? 0) < 1) {
   await db.withTransactionAsync(async () => {
     await db.execAsync(`
       CREATE TABLE IF NOT EXISTS medications (
@@ -45,5 +46,25 @@ export async function migrate(db: SQLiteDatabase): Promise<void> {
       CREATE INDEX IF NOT EXISTS idx_confirmed_at ON intake_confirmations(confirmed_at_utc DESC);
     `);
     await db.execAsync('PRAGMA user_version = 1;');
+  });
+  }
+  await db.withTransactionAsync(async()=>{
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS reminder_settings (
+        id INTEGER PRIMARY KEY NOT NULL CHECK(id=1),
+        enabled INTEGER NOT NULL DEFAULT 0 CHECK(enabled IN (0,1)),
+        show_details INTEGER NOT NULL DEFAULT 0 CHECK(show_details IN (0,1))
+      );
+      INSERT OR IGNORE INTO reminder_settings(id,enabled,show_details) VALUES(1,0,0);
+      CREATE TABLE IF NOT EXISTS reminder_jobs (
+        occurrence_id TEXT PRIMARY KEY NOT NULL,
+        notification_id TEXT NOT NULL UNIQUE,
+        planned_at_utc TEXT NOT NULL,
+        fingerprint TEXT NOT NULL,
+        reconciled_at_utc TEXT NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS idx_reminder_jobs_date ON reminder_jobs(planned_at_utc);
+    `);
+    await db.execAsync('PRAGMA user_version = 2;');
   });
 }

@@ -3,6 +3,7 @@ import { Alert, View } from 'react-native';
 import { useLocalSearchParams, useFocusEffect, useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { Action, Body, Heading, Page, Panel } from '../../src/components/ui';
+import { reconcileMedicationReminders } from '../../src/services/medicationReminders';
 import { getMedication, setArchived, type Medication } from '../../src/data/medications';
 import { previewWindow, localToday, offsetDate, readableQuantity, formatDay } from '../../src/core/dates';
 export default function MedicationDetail(){
@@ -14,6 +15,6 @@ export default function MedicationDetail(){
     <Panel tone="mint"><Heading>Próximas tomadas</Heading>{list.length?list.slice(0,18).map(x=><Body key={x.id}>{formatDay(x.localDate)} às {x.localTime} — {readableQuantity(x.quantity,x.unit)}</Body>):<Body muted>Sem doses futuras nessa janela.</Body>}</Panel>
     {med&&!med.archived?<><Action label="Editar doses a partir de amanhã" icon="edit" onPress={()=>router.push({pathname:'/medication/new',params:{id:med.id}})}/>
       <Action label="Arquivar medicamento" secondary icon="pause" onPress={()=>Alert.alert('Arquivar medicamento?', 'Ele deixará de aparecer na rotina. O histórico confirmado será preservado.',[
-        {text:'Cancelar',style:'cancel'},{text:'Arquivar',onPress:async()=>{await setArchived(db,med.id,true);router.replace('/(tabs)/medicines')}}])}/></>:null}
+        {text:'Cancelar',style:'cancel'},{text:'Arquivar',onPress:async()=>{await setArchived(db,med.id,true);try{await reconcileMedicationReminders(db)}catch(_error){Alert.alert('Arquivado','Medicamento arquivado, mas os avisos precisam ser conferidos em Meus alarmes.')}router.replace('/(tabs)/medicines')}}])}/></>:null}
   </Page>;
 }
