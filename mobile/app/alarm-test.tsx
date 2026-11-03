@@ -3,7 +3,7 @@ import { AppState, Platform, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Action, Body, Heading, Page, Panel, StatusLine } from '../src/components/ui';
 import { colors } from '../src/theme';
-import { askForExactAlarm, askForNotifications, cancelPendingTests, readDiagnostic, scheduleTestAlert, type AlarmDiagnostic } from '../src/services/alarmSpike';
+import { askForNotifications, cancelPendingTests, readDiagnostic, scheduleTestAlert, type AlarmDiagnostic } from '../src/services/alarmSpike';
 
 export default function AlarmTest(){
   const router=useRouter();
@@ -30,14 +30,12 @@ export default function AlarmTest(){
     <Action label="Gerenciar alarmes de medicamentos" secondary onPress={()=>router.push('/reminder-settings')}/>
     <Panel tone="mint"><Heading>Estado do aparelho</Heading>
       <StatusLine ok={diag?.notificationPermission??null} title="Permissão de notificações" details={diag?.notificationPermission?'Concedida':'Negada ou indisponível'}/>
-      <StatusLine ok={diag?.exactAlarmPermission??null} title="Alarme exato" details={Platform.OS==='android'?(diag?.exactAlarmPermission?'Permitido':'Pode ter atraso; solicitar acesso se necessário'):'Não se aplica a este teste Android'}/>
+      <StatusLine ok={diag?.exactAlarmPermission??null} title="Alarme exato" details={Platform.OS==='android'?'Não disponível neste SDK; o aviso pode atrasar.':'Não avaliado neste teste.'}/>
       <StatusLine ok={diag?diag.pendingTests>0:null} title="Testes pendentes" details={`${diag?.pendingTests??'–'} notificação(ões) de teste registradas no SO`}/>
       <Body muted style={{fontSize:13,marginTop:10}}>Última consulta: {diag?.collectedAt??'–'}</Body>
     </Panel>
     <Panel><Heading>Permissões</Heading>
       <Action label="Solicitar notificações" secondary disabled={busy} onPress={()=>{void safely(askForNotifications,'Solicitação concluída. Confira o estado acima.');}} icon="bell"/>
-      {Platform.OS==='android' && diag?.exactAlarmPermission!==true ?
-        <Action label="Abrir acesso a alarmes exatos" secondary disabled={busy} onPress={()=>{void safely(askForExactAlarm,'Confira se o sistema concedeu o acesso.');}} icon="permission"/>:null}
       <Action label="Atualizar diagnóstico" secondary disabled={busy} onPress={()=>{void safely(refresh,'Diagnóstico atualizado.');}}/>
     </Panel>
     <Panel tone="blue"><Heading>Teste: aviso em 60 segundos</Heading>
