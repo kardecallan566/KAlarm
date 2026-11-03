@@ -38,12 +38,16 @@ jobs:
         run: pnpm install --no-frozen-lockfile
       - name: Validar arquivo de entrada e resolução do Router
         run: pnpm run check:entry
+      - name: Verificar dependências instaladas do SDK 58
+        run: pnpm run check:sdk
       - name: Testar isolamento do Expo Go
         run: pnpm run test:go-mode
       - name: Validar layout da raiz
         run: pnpm run test:layout
-      - name: Checar Expo
+      - name: Checar alinhamento das dependências Expo SDK 58
         run: pnpm exec expo install --check
+      - name: Expo Doctor
+        run: pnpm exec expo-doctor
       - name: TypeScript
         run: pnpm run check
       - name: Compilar bundle JavaScript Android (Metro / Development Build)

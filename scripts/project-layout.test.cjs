@@ -22,7 +22,10 @@ test('Raiz contém um projeto Expo completo', () => {
 test('Assets continuam acessíveis a partir da raiz', () => {
   const config = require('../app.json').expo;
   assert.ok(exists(config.icon), 'Icone principal indisponivel');
-  assert.ok(exists(config.splash.image), 'Splash indisponivel');
+  const splashPlugin = config.plugins.find(x => Array.isArray(x) && x[0] === 'expo-splash-screen');
+  assert.ok(splashPlugin, 'Plugin expo-splash-screen ausente');
+  assert.ok(exists(splashPlugin[1].image), 'Splash indisponivel');
+  assert.equal(splashPlugin[1].backgroundColor, '#F7FAF8');
   assert.ok(exists(config.android.adaptiveIcon.foregroundImage), 'Adaptive icon indisponivel');
   assert.ok(exists('assets/softcare/manifest.json'));
 });
@@ -55,4 +58,16 @@ test('O workflow GitHub Actions executa pnpm e Expo na raiz', () => {
   assert.doesNotMatch(yml, /node mobile\/scripts\//);
   assert.match(yml, /pnpm install/);
   assert.match(yml, /expo export --platform android/);
+});
+
+test('Manifesto usa Expo SDK 58, React Native 0.88 e React 19.3', () => {
+  const pkg = require('../package.json');
+  assert.match(pkg.dependencies.expo, /58/);
+  assert.equal(pkg.dependencies.react, '19.3.0');
+  assert.equal(pkg.dependencies['react-native'], '0.88.0');
+  assert.match(pkg.dependencies['expo-router'], /58/);
+  assert.match(pkg.dependencies['expo-sqlite'], /58/);
+  assert.match(pkg.dependencies['expo-notifications'], /58/);
+  assert.match(pkg.scripts.start, /--go/);
+  assert.match(pkg.scripts['start:dev'], /--dev-client/);
 });
