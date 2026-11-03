@@ -32,7 +32,7 @@ export default function ReminderSettingsScreen(){
   <Panel><Heading>{t('reminders.activation')}</Heading><Body muted>{t('reminders.activationBody')}</Body><View style={{height:12}}/>
    <Action icon={status?.enabled?'pause':'bell'} disabled={busy||expoGoSafe} label={expoGoSafe?t('reminders.unavailable'):status?.enabled?t('reminders.disable'):t('reminders.activate')} onPress={()=>void work(async()=>{
     if(status?.enabled){await updateReminderSettings(db,{enabled:false});await reconcileMedicationReminders(db);return}
-    if(!await requestMedicationPermission())throw new Error(t('reminders.permissionDenied'));
+    if(!await requestMedicationPermission(language))throw new Error(t('reminders.permissionDenied'));
     await updateReminderSettings(db,{enabled:true});await reconcileMedicationReminders(db);
    })}/>
    {!status?.permitted?<Action label={t('reminders.openSystem')} icon="settings" secondary onPress={()=>void Linking.openSettings()}/>:null}
