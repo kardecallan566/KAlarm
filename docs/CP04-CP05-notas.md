@@ -1,3 +1,5 @@
+> **REGISTRO HISTÓRICO.** Os comandos que mencionam `cd mobile` abaixo são anteriores à migração CP10. A execução atual é na raiz de KAlarm.
+
 # KAlarm CP04/CP05 — SQLite + editor (versão experimental)
 
 - Dados locais em SQLite (não criptografados nesta prova de conceito); sem conta ou sincronização.

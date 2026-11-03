@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {makeReminderPlan,diffReminderPlan} from '../../../mobile/src/services/reminderPlan.ts';
+import {makeReminderPlan,diffReminderPlan} from '../../../src/services/reminderPlan.ts';
 const now=Date.UTC(2026,9,22,10,0);
 const e=(id:string,minutes:number,quantity='1')=>({id,plannedAtISO:new Date(now+minutes*60000).toISOString(),localTime:'08:00',medicationName:'Medicamento fictício',quantity,unit:'tablet'});
 test('omite confirmadas e vencidas',()=>assert.deepEqual(makeReminderPlan([e('past',-5),e('taken',10),e('new',20)],new Set(['taken']),now,false).map(x=>x.id),['new']));

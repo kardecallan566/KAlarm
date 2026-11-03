@@ -23,4 +23,4 @@ O componente escolhe PNGs individuais por referência estática `require()` comp
 ## Atenção
 As cartelas foram geradas por IA e os recortes são PNGs rasterizados, **não SVGs vetoriais editáveis**. Nunca renomear PNG para `.svg`. Usar 32–76 dp em telas normais e conferir leitura em 24 dp na navegação. Testar a máscara do ícone adaptativo em dispositivos e finalizar variações antes da publicação.
 
-O projeto segue sendo a **primeira versão de demonstração**, sem cadastro funcional de medicamentos e sem confirmação de entrega real de alarmes.
+O cadastro e o SQLite estão integrados nas branches de desenvolvimento. Os alarmes ainda não foram homologados em dispositivo físico e o modo Expo Go seguro não os agenda.
