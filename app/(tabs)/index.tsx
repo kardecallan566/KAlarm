@@ -44,6 +44,5 @@ export default function Home(){
       </Panel>;
     })}
     <Panel tone="blue"><Heading>Lembretes de medicamentos</Heading><Body muted>Ative os alarmes e confira as permissões. Os avisos estão sujeitos às limitações do aparelho e precisam de testes reais.</Body><View style={{height:10}}/><Action label={expoGoSafe?'Ver por que os avisos estão desativados':'Ativar e conferir alarmes'} secondary icon="alarm" onPress={()=>router.push('/reminder-settings')}/></Panel>
-    <Action label="Ver biblioteca de ícones" secondary icon="settings" onPress={()=>router.push('/icon-gallery')}/>
   </Page>;
 }
