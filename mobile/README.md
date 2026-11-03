@@ -1,55 +1,88 @@
-# KAlarm — Expo e pnpm
+# KAlarm — execução com pnpm (Expo SDK 57)
 
-Aplicativo React Native + Expo SDK 57 com identidade SoftCare, SQLite e lembretes locais.
+## Abrir especificamente no Android (sem navegador)
 
-## Ambiente recomendado: Development Build
+No terminal do computador, **abra a pasta `KAlarm/mobile` antes de executar o Expo**. O servidor Metro pode exibir um endereço HTTP local; isso não transforma o aplicativo em site.
 
-O KAlarm **importa `expo-notifications` na inicialização**. Uma falha conhecida do Expo Go 57 no Android podia encerrar o aplicativo imediatamente durante esse import. Por isso, **não considere Expo Go um ambiente válido para confirmar que os alarmes estão funcionando**.
+### Expo Go 57 — apenas interface e SQLite
 
 ```powershell
-git switch fix/cp08-expo-go-stability
-cd mobile
-pnpm install
-pnpm exec expo install --check
-pnpm run check:entry
-pnpm run android
+pnpm start:android:go:safe
 ```
 
-O comando `pnpm run android` compila uma Development Build usando seu Android SDK e instala o app no dispositivo/emulador. Para iniciar o servidor posteriormente:
+Com o celular conectado por USB (e `adb devices` mostrando o dispositivo) ou com um emulador aberto, o Expo tentará abrir diretamente no Android. Se usar um celular **sem USB**, execute `pnpm start:go:safe` e leia o QR Code pelo aplicativo Expo Go. O Expo Go instalado deve ser compatível com o **SDK 57**.
+
+### KAlarm instalado no Android — com módulos nativos
 
 ```powershell
+pnpm run android
+# Na próxima execução, com o KAlarm já instalado:
+pnpm start:android:dev
+```
+
+Use `pnpm start:dev` se desejar somente o QR Code, sem exigir que `adb` encontre um dispositivo. A Development Build é a recomendada para alarmes. Pressionar **W** na CLI Expo abre intencionalmente a versão web, enquanto **A** seleciona Android.
+
+A forma correta de limpar o cache é `pnpm exec expo start --clear` (o subcomando `start` vem antes do argumento `--clear`).
+
+## O Expo Go abre e fecha sozinho?
+
+Há bugs conhecidos na linha SDK 57 do Expo Go Android, inclusive um crash no import de `expo-notifications`. O KAlarm usava essa biblioteca logo na inicialização. Para localizar o problema, disponibilizamos **dois modos separados**:
+
+### 1. Testar interface + SQLite no Expo Go, sem notificações
+
+```powershell
+git fetch origin
+git switch fix/cp09-expo-go-safe-mode
+cd mobile
+pnpm install
+pnpm start:go:safe
+```
+
+Abra no **Expo Go** pelo QR code. O modo seguro substitui `expo-notifications` no bundle Metro por um adaptador que **não agenda avisos e não concede permissões fictícias**. Uma faixa informativa aparece na tela inicial. É possível testar UI, cadastro e SQLite, mas **não os alarmes**.
+
+### 2. Se ainda fechar: teste mínimo do React Native
+
+Encerre o servidor anterior com Ctrl+C e execute:
+
+```powershell
+pnpm start:smoke
+```
+
+Esse teste não importa Expo Router, SQLite nem notificações em tempo de execução. Deve aparecer a mensagem **KAlarm · Teste básico OK**.
+
+- Se o modo mínimo também fechar, a hipótese principal passa a ser a versão do Expo Go, Hermes/React Native ou o ambiente do dispositivo, e não o código de medicações.
+- Se o teste mínimo funcionar mas o modo seguro fechar, investigaremos Router, SQLite e outros módulos do projeto.
+- Se ambos funcionarem, o problema provavelmente era causado pelo uso de notificações no Expo Go.
+
+Garanta que o Expo Go instalado no Android é compatível com a **SDK 57**: https://expo.dev/go?platform=android&sdkVersion=57
+
+### 3. Testar o KAlarm com alarmes reais (recomendado)
+
+```powershell
+# Dentro de mobile/ e com Android SDK e dispositivo conectado:
+pnpm run android
 pnpm start:dev
 ```
 
-## Para isolar falhas do Expo Go (somente inspeção de UI)
+A Development Build contém as bibliotecas nativas do projeto. Use-a para verificar permissões, fila e avisos em dispositivo físico.
 
-```powershell
-pnpm start:go:clear
-```
-
-Isso força o alvo Expo Go. Atualize ou instale a versão correspondente ao SDK 57 pelo [Expo Go Android](https://expo.dev/go?platform=android&sdkVersion=57). Se o app fechar durante a importação de notificações, **não tente contornar isso apagando o banco**; use a Development Build. O código de notificações da aplicação não está sendo desativado silenciosamente.
-
-O comando `pnpm start` continua apontando para a Development Build, por escolha deliberada. `pnpm start:go` e `pnpm start:go:clear` são opções apenas para diagnóstico.
-
-## Identificar a falha
-
-Se o aplicativo ainda fechar:
+### Como obter o erro verdadeiro em um Android conectado
 
 ```powershell
 adb logcat -c
-# Abra o aplicativo, espere a falha e, depois:
+# Abra o app e reproduza o fechamento; em seguida:
 adb logcat -b crash -d
 ```
 
-No terminal Metro, também confira erros de JavaScript. Em caso de erro `no such table` ou `SQLite`, utilize o erro mostrado pelo KAlarm e **não apague os dados para tentar corrigir automaticamente**.
+Também copie o erro do Metro caso ele apareça. Não apague nem limpe os dados do KAlarm sem backup: o protótipo registra informações de medicação localmente.
 
-## Verificações
+### Verificações úteis
 
 ```powershell
 pnpm run check:entry
+pnpm run test:go-mode
 pnpm run check
 pnpm exec expo-doctor
-pnpm exec expo export --platform android --output-dir .expo-ci-bundle
 ```
 
-As notificações dependem de permissões e de testes reais no Android; o bundle compilado não comprova entrega pontual.
+**Atenção:** uma exportação JavaScript concluída e os testes do CI não comprovam estabilidade nativa nem entrega pontual de notificações.

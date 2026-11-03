@@ -10,6 +10,7 @@ import { localToday,offsetDate,readableQuantity,formatDay } from '../../src/core
 import { colors as c } from '../../src/theme';
 import type { Occurrence } from '../../src/core/scheduling';
 type DisplayOccurrence=Occurrence & {medicationName:string};
+const expoGoSafe = process.env.EXPO_PUBLIC_KALARM_GO_SAFE === '1';
 export default function Home(){
   const router=useRouter();const db=useSQLiteContext();
   const [events,setEvents]=useState<DisplayOccurrence[]>([]);const [confirmed,setConfirmed]=useState<Set<string>>(new Set());const [error,setError]=useState('');const [busy,setBusy]=useState('');
@@ -28,6 +29,7 @@ export default function Home(){
     finally{setBusy('');}
   };
   return <Page title="Sua rotina de cuidado" subtitle="Organize seus horários com tranquilidade.">
+    {expoGoSafe?<Panel tone="peach"><Heading>Modo de teste Expo Go</Heading><Body>Este modo permite testar telas, cadastro e banco local. Os alarmes estão desativados neste teste. Para testá-los, instale a Development Build do KAlarm.</Body></Panel>:null}
     <Panel tone="mint"><Image source={require('../../assets/brandmark.png')} style={{width:82,height:82,alignSelf:'center'}} resizeMode="contain" accessibilityLabel="KAlarm"/>
       <Heading>{next?'Próxima dose programada':'Seus lembretes em um só lugar'}</Heading>
       {next?<><Text style={{fontSize:27,fontWeight:'800',color:c.ink}}>{next.localTime}</Text><Body>{next.medicationName}</Body><Body>{readableQuantity(next.quantity,next.unit)} · {formatDay(next.localDate)}</Body></>:<Body muted>Adicione seu primeiro medicamento para montar a rotina.</Body>}
@@ -41,7 +43,7 @@ export default function Home(){
         {!isConfirmed&&isDue?<View style={{marginTop:14}}><Action label={busy===item.id?'Registrando...':'Confirmar que tomei'} icon="confirm" disabled={!!busy} onPress={()=>void take(item)}/></View>:null}
       </Panel>;
     })}
-    <Panel tone="blue"><Heading>Lembretes de medicamentos</Heading><Body muted>Ative os alarmes e confira as permissões. Os avisos estão sujeitos às limitações do aparelho e precisam de testes reais.</Body><View style={{height:10}}/><Action label="Ativar e conferir alarmes" secondary icon="alarm" onPress={()=>router.push('/reminder-settings')}/></Panel>
+    <Panel tone="blue"><Heading>Lembretes de medicamentos</Heading><Body muted>Ative os alarmes e confira as permissões. Os avisos estão sujeitos às limitações do aparelho e precisam de testes reais.</Body><View style={{height:10}}/><Action label={expoGoSafe?'Ver por que os avisos estão desativados':'Ativar e conferir alarmes'} secondary icon="alarm" onPress={()=>router.push('/reminder-settings')}/></Panel>
     <Action label="Ver biblioteca de ícones" secondary icon="settings" onPress={()=>router.push('/icon-gallery')}/>
   </Page>;
 }

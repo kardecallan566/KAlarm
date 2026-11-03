@@ -6,6 +6,8 @@ import {Page,Panel,Heading,Body,Action,StatusLine} from '../src/components/ui';
 import {updateReminderSettings} from '../src/data/reminderSettings';
 import {readReminderDiagnostic,reconcileMedicationReminders,requestMedicationPermission,type ReminderDiagnostic} from '../src/services/medicationReminders';
 
+const expoGoSafe = process.env.EXPO_PUBLIC_KALARM_GO_SAFE === '1';
+
 export default function ReminderSettingsScreen(){
  const db=useSQLiteContext(),router=useRouter();
  const [status,setStatus]=useState<ReminderDiagnostic|null>(null),[busy,setBusy]=useState(false),[message,setMessage]=useState('');
@@ -20,6 +22,7 @@ export default function ReminderSettingsScreen(){
  };
  return <Page title="Meus alarmes" subtitle="Ative os lembretes e confira como o aparelho está agendando os avisos.">
   <Action label="Voltar" secondary onPress={()=>router.back()}/>
+  {expoGoSafe?<Panel tone="peach"><Heading>Teste sem alarmes no Expo Go</Heading><Body>Notificações locais estão desativadas neste modo por segurança. Para testá-las, use uma Development Build: pnpm run android e pnpm start:dev.</Body></Panel>:null}
   <Panel tone="mint"><Heading>Estado dos lembretes</Heading>
    <StatusLine ok={status?.enabled??null} title="Lembretes" details={status?.enabled?'Ativados por você':'Desativados por padrão'}/>
    <StatusLine ok={status?.permitted??null} title="Permissão de notificação" details={status?.permitted?'Concedida':'Necessária para avisos'}/>
@@ -36,7 +39,7 @@ export default function ReminderSettingsScreen(){
   <Panel><Heading>Ativação</Heading>
    <Body muted>O KAlarm só solicita permissões quando você decide ativar. Uma notificação nunca confirma uma dose.</Body>
    <View style={{height:12}}/>
-   <Action icon={status?.enabled?'pause':'bell'} disabled={busy} label={status?.enabled?'Desativar lembretes':'Ativar lembretes de medicamentos'} onPress={()=>void work(async()=>{
+   <Action icon={status?.enabled?'pause':'bell'} disabled={busy||expoGoSafe} label={expoGoSafe?'Alarmes indisponíveis no Expo Go':status?.enabled?'Desativar lembretes':'Ativar lembretes de medicamentos'} onPress={()=>void work(async()=>{
     if(status?.enabled){await updateReminderSettings(db,{enabled:false});await reconcileMedicationReminders(db);return}
     if(!await requestMedicationPermission())throw new Error('Permissão negada. Ative as notificações nas configurações do aparelho.');
     await updateReminderSettings(db,{enabled:true});await reconcileMedicationReminders(db);
