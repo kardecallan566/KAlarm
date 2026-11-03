@@ -17,6 +17,13 @@ type ScheduleRow = {id:string;medication_id:string;version:number;timezone:strin
 const newId=():string=>`${Date.now().toString(36)}-${Math.random().toString(36).slice(2,11)}`;
 const now=()=>new Date().toISOString();
 
+/** Dates for a schedule transition: a new treatment starts today; an edit starts tomorrow. */
+export function scheduleTransitionDates(today:string, editing:boolean):{startDate:string;previousEffectiveUntil?:string}{
+  return editing
+    ?{startDate:offsetDate(today,1),previousEffectiveUntil:offsetDate(today,-1)}
+    :{startDate:today};
+}
+
 function fromRow(row:ScheduleRow):Schedule {
   return {id:row.id,medicationId:row.medication_id,version:row.version,timezone:row.timezone,
     startDate:row.start_date,endDate:row.end_date??undefined,effectiveFrom:row.effective_from,
@@ -49,7 +56,9 @@ export async function saveMedication(db:SQLiteDatabase,draft:MedicationDraft,exi
   const existing=existingId?await getMedication(db,existingId):null;
   if(existingId&&!existing)throw new Error('Medicamento não encontrado.');
   const latest=existing?.schedules.at(-1);
-  const start=existing?offsetDate(localToday(latest?.timezone??draft.timezone),1):draft.startDate;
+  const today=localToday(latest?.timezone??draft.timezone);
+  const transition=scheduleTransitionDates(today,Boolean(existing));
+  const start=transition.startDate;
   // A version that has not started can be corrected in place without touching historical events.
   const revisePending=Boolean(latest && latest.effectiveFrom && latest.effectiveFrom>=start);
   const version=revisePending?latest!.version:(latest?.version??0)+1;
@@ -59,7 +68,7 @@ export async function saveMedication(db:SQLiteDatabase,draft:MedicationDraft,exi
   await db.withTransactionAsync(async()=>{
     if(existing) {
       await db.runAsync('UPDATE medications SET name=?,form=?,strength_label=?,updated_at=? WHERE id=?',draft.name.trim(),draft.form,draft.strengthLabel.trim()||null,updated,id);
-      if(latest && !revisePending) await db.runAsync('UPDATE schedules SET effective_until=? WHERE id=?',offsetDate(start,-1),latest.id);
+      if(latest && !revisePending && transition.previousEffectiveUntil) await db.runAsync('UPDATE schedules SET effective_until=? WHERE id=?',transition.previousEffectiveUntil,latest.id);
     } else {
       await db.runAsync('INSERT INTO medications(id,name,form,strength_label,created_at,updated_at) VALUES(?,?,?,?,?,?)',id,draft.name.trim(),draft.form,draft.strengthLabel.trim()||null,updated,updated);
     }
