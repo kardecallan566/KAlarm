@@ -14,8 +14,8 @@ function notificationQuantity(quantity:string,unit:string,language:AppLanguage):
 }
 /** Compose readable alerts; private mode never exposes medicine or dose. */
 export function formatMedicationNotification(event:MedicationNotificationEvent,showDetails:boolean,language:AppLanguage='pt-BR'):{title:string;body:string}{
- if(showDetails)return {title:`KAlarm · ${event.medicationName}`,body:language==='pt-BR'? `Dose: ${notificationQuantity(event.quantity,event.unit,language)} | Horário: ${event.localTime}`:`Dose: ${notificationQuantity(event.quantity,event.unit,language)} | Time: ${event.localTime}`};
+ if(showDetails)return {title:`KAlarm · ${event.medicationName}`,body:language==='pt-BR'? `Dose: ${notificationQuantity(event.quantity,event.unit,language)}\nHorário: ${event.localTime}`:`Dose: ${notificationQuantity(event.quantity,event.unit,language)}\nTime: ${event.localTime}`};
  return language==='pt-BR'
-  ?{title:'KAlarm · Hora do medicamento',body:`Aviso às ${event.localTime}. Abra o KAlarm para consultar a dose.`}
-  :{title:'KAlarm · Medication time',body:`Alert at ${event.localTime}. Open KAlarm to view the dose.`};
+  ?{title:'KAlarm · Hora do medicamento',body:`Está na hora da sua dose.\nAbra o KAlarm para ver os detalhes.`}
+   :{title:'KAlarm · Medication time',body:`It's time for your dose.\nOpen KAlarm to view details.`};
 }
