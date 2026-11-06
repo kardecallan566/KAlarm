@@ -12,7 +12,7 @@ test('aviso detalhado em português separa nome, dose e horário',()=>{
 });
 test('aviso discreto em inglês mantém privacidade e traduz o texto',()=>{
  const message=formatMedicationNotification(event,false,'en-US');
- assert.equal(message.title,'KAlarm · Medication time');assert.equal(message.body,'It\'s time for your dose.\nOpen KAlarm to view details.');assert.doesNotMatch(message.body,/Medicamento fictício|tablet/);
+ assert.equal(message.title,'KAlarm · Medication time');assert.equal(message.body,'It\'s time for your dose (15:30).\nOpen KAlarm to view details.');assert.doesNotMatch(message.body,/Medicamento fictício|tablet/);
 });
 test('aviso detalhado em inglês traduz dose e horário',()=>{
  const message=formatMedicationNotification(event,true,'en-US');
