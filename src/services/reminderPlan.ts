@@ -6,7 +6,7 @@ export type PlannedReminder=ReminderCandidate&{fingerprint:string};
 export type QueueAudit={expected:number;matched:number;missing:number;obsolete:number;firstPlannedAtISO:string|null;lastPlannedAtISO:string|null;atCapacity:boolean};
 export type NativeReminder={identifier:string;occurrenceId?:string;fingerprint?:string};
 export const MEDICATION_KIND='kalarm-medication-v1';
-export const REMINDER_CONTENT_VERSION='notification-v3';
+export const REMINDER_CONTENT_VERSION='notification-v4';
 export const REMINDER_HORIZON_DAYS=30;
 export const MAX_MEDICATION_NOTIFICATIONS=40;
 export function makeReminderPlan(events:ReminderCandidate[],confirmed:ReadonlySet<string>,nowMs:number,showDetails:boolean,limit=MAX_MEDICATION_NOTIFICATIONS,deliveryMode:DeliveryMode='bestEffort',language:AppLanguage='pt-BR'):PlannedReminder[]{
