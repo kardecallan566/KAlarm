@@ -16,6 +16,6 @@ function notificationQuantity(quantity:string,unit:string,language:AppLanguage):
 export function formatMedicationNotification(event:MedicationNotificationEvent,showDetails:boolean,language:AppLanguage='pt-BR'):{title:string;body:string}{
  if(showDetails)return {title:`KAlarm · ${event.medicationName}`,body:language==='pt-BR'? `Dose: ${notificationQuantity(event.quantity,event.unit,language)}\nHorário: ${event.localTime}`:`Dose: ${notificationQuantity(event.quantity,event.unit,language)}\nTime: ${event.localTime}`};
  return language==='pt-BR'
-  ?{title:'KAlarm · Hora do medicamento',body:`Está na hora da sua dose.\nAbra o KAlarm para ver os detalhes.`}
-   :{title:'KAlarm · Medication time',body:`It's time for your dose.\nOpen KAlarm to view details.`};
+  ?{title:'KAlarm · Hora do medicamento',body:`Está na hora da sua dose (${event.localTime}).\nAbra o KAlarm para ver os detalhes.`}
+   :{title:'KAlarm · Medication time',body:`It's time for your dose (${event.localTime}).\nOpen KAlarm to view details.`};
 }
