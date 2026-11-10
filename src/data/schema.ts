@@ -5,7 +5,7 @@ export async function migrate(db: SQLiteDatabase): Promise<void> {
   await db.execAsync('PRAGMA foreign_keys = ON;');
   const row = await db.getFirstAsync<{user_version:number}>('PRAGMA user_version');
   const version=row?.user_version??0;
-  if(version>=3)return;
+  if(version>=4)return;
   if (version < 1) {
   await db.withTransactionAsync(async () => {
     await db.execAsync(`
