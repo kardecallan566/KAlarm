@@ -43,9 +43,15 @@ Editor → motor de regras → janela de ocorrências → SQLite
 - Solicitar `POST_NOTIFICATIONS` (Android 13+), depois avaliar `SCHEDULE_EXACT_ALARM` para exatidão (Android 12+).
 - `USE_EXACT_ALARM` é restrita pela política Google Play, usar **somente se a funcionalidade central se enquadrar e aprovação/declaração forem apropriadas**.
 - Documentação Expo recente descreve `delivery: 'alarmClock'`, dependente de permissão exata; testar comportamento em aparelhos reais e fabricantes diferentes.
-- Canais de notificação para cuidado/alarmes; nome, importância e som definidos antes do primeiro agendamento, respeitando configurações do usuário.
+- Canais Android separados por medicamento e toque escolhido; canais são imutáveis quanto ao som após criados, então a troca usa um novo ID de canal. Respeitar configurações do usuário.
+- Toques `bell`, `chime` e `pulse` são WAVs originais gerados por `scripts/generate-notification-sounds.cjs` durante a leitura do `app.config.js`/prebuild; não são músicas comerciais.
 - Full-screen intent, se considerado, exige investigação de permissão, elegibilidade de publicação e riscos de UX; **não incluir no MVP sem prova técnica/política**.
 - Reinício do aparelho, restrições de bateria e alterações do relógio exigem roteiro de teste.
+
+## Vibração contínua no app
+
+- Ao receber um aviso com o app em primeiro plano, ou ao tocar na notificação, abrir `alarm-active` e repetir a vibração enquanto essa tela estiver ativa. O botão de desativar cancela a vibração e não confirma uma dose.
+- **Limitação atual:** isso não é um serviço de alarme nativo persistente. Se o app for encerrado, o sistema restringir execução, ou a pessoa não abrir a notificação, não há garantia de vibração contínua até tocar no botão. Para comportamento de despertador completo, implementar serviço/receiver nativo Android e avaliar políticas de full-screen intent; validar em aparelho real. iOS não permite vibração contínua em background comum.
 
 ## iOS
 
