@@ -45,6 +45,7 @@ export default function RootLayout() {
           <ReminderLifecycle/>
           <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
             <Stack.Screen name="(tabs)"/>
+            <Stack.Screen name="alarm-active" options={{presentation:'modal'}}/>
             <Stack.Screen name="settings" options={{presentation:'card'}}/>
             <Stack.Screen name="medication/new"/>
             <Stack.Screen name="medication/[id]"/>
