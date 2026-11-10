@@ -15,7 +15,14 @@ test('editar hoje começa amanhã e preserva a versão anterior até hoje',()=>{
 });
 
 
-test('editar medicamento cadastrado hoje não cria intervalo efetivo inválido',()=>{\n const today='2026-11-03',transition=scheduleTransitionDates(today,true);\n const previous:Schedule={id:'med:v1',medicationId:'med',version:1,timezone:'America/Sao_Paulo',\n  startDate:today,effectiveFrom:today,effectiveUntil:transition.previousEffectiveUntil,\n  recurrence:{mode:'daily',plan:{kind:'slots',slots:[{id:'morning',time:'08:00',quantity:'1',unit:'tablet'}]}};\n assert.equal(previewOccurrences(previous,{from:today,to:today}).length,1);\n});\ntest('medicamento novo mantém hoje como início da programação',()=>{
+test('editar medicamento cadastrado hoje não cria intervalo efetivo inválido',()=>{
+ const today='2026-11-03',transition=scheduleTransitionDates(today,true);
+ const previous:Schedule={id:'med:v1',medicationId:'med',version:1,timezone:'America/Sao_Paulo',
+  startDate:today,effectiveFrom:today,effectiveUntil:transition.previousEffectiveUntil,
+  recurrence:{mode:'daily',plan:{kind:'slots',slots:[{id:'morning',time:'08:00',quantity:'1',unit:'tablet'}]}};
+ assert.equal(previewOccurrences(previous,{from:today,to:today}).length,1);
+});
+test('medicamento novo mantém hoje como início da programação',()=>{
  assert.deepEqual(scheduleTransitionDates('2026-11-03',false),{startDate:'2026-11-03'});
 });
 
