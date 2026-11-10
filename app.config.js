@@ -9,4 +9,4 @@ const plugins = staticConfig.expo.plugins.map((plugin) => {
   return plugin;
 });
 
-module.exports = { expo: { ...staticConfig.expo, plugins } };
+module.exports = { ...staticConfig.expo, plugins };
