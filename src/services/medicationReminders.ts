@@ -2,20 +2,29 @@ import {Platform} from 'react-native';
 import type {SQLiteDatabase} from 'expo-sqlite';
 import * as Notifications from 'expo-notifications';
 import {localToday,offsetDate} from '../core/dates';
-import {getConfirmations,listMedications,upcomingForMedications} from '../data/medications';
+import {getConfirmations,listMedications,upcomingForMedications,type AlarmSound} from '../data/medications';
 import {getReminderSettings,writeReminderJobs} from '../data/reminderSettings';
 import {getAppLanguage,type AppLanguage} from '../data/appPreferences';
 import {formatMedicationNotification} from './medicationNotificationContent';
 import {MEDICATION_KIND,MAX_MEDICATION_NOTIFICATIONS,REMINDER_HORIZON_DAYS,makeReminderPlan,diffReminderPlan,auditReminderQueue,createReconcileGate,type NativeReminder} from './reminderPlan';
-export const MEDICATION_CHANNEL='kalarm-medication-pt-br-v3';
-export function medicationChannelForLanguage(language:AppLanguage){return language==='pt-BR'?'kalarm-medication-pt-br-v3':'kalarm-medication-en-us-v3'}
+
+export const MEDICATION_CHANNEL='kalarm-medication-pt-br-v4';
+export function medicationChannelForLanguage(language:AppLanguage,medicationId?:string,sound:AlarmSound='default'){
+ if(!medicationId)return language==='pt-BR'?'kalarm-medication-pt-br-v4':'kalarm-medication-en-us-v4';
+ const safeId=medicationId.replace(/[^a-zA-Z0-9]/g,'').slice(-24)||'med';
+ return `kalarm-${safeId}-${sound}-${language==='pt-BR'?'pt':'en'}`;
+}
 export type ReminderDiagnostic={enabled:boolean;showDetails:boolean;permitted:boolean;exact:boolean|null;scheduled:number;horizonDays:number;maximumNotifications:number;mode:'alarmClock'|'bestEffort';expected:number;matched:number;missing:number;obsolete:number;firstPlannedAtISO:string|null;lastPlannedAtISO:string|null;atCapacity:boolean;lastError?:string};
 const allowed=(p:Notifications.NotificationPermissionsStatus)=>p.granted||p.ios?.status===Notifications.IosAuthorizationStatus.PROVISIONAL;
-export async function ensureMedicationChannel(language:AppLanguage='pt-BR'){
- if(Platform.OS==='android')await Notifications.setNotificationChannelAsync(medicationChannelForLanguage(language),{
-  name:language==='pt-BR'?'KAlarm · Medicamentos':'KAlarm · Medications',
+const notificationSound=(sound:AlarmSound)=>sound==='default'?'default':`${sound}.wav`;
+export async function ensureMedicationChannel(language:AppLanguage='pt-BR',medicationId?:string,sound:AlarmSound='default'){
+ if(Platform.OS==='android')await Notifications.setNotificationChannelAsync(medicationChannelForLanguage(language,medicationId,sound),{
+  name:medicationId?(language==='pt-BR'?'KAlarm · Alarme do medicamento':'KAlarm · Medication alarm'):(language==='pt-BR'?'KAlarm · Medicamentos':'KAlarm · Medications'),
   description:language==='pt-BR'?'Avisos de doses que você programou':'Alerts for your scheduled doses',
-  importance:Notifications.AndroidImportance.HIGH,sound:'default',vibrationPattern:[0,350,200,350]
+  importance:Notifications.AndroidImportance.HIGH,
+  sound:notificationSound(sound),
+  enableVibrate:true,
+  vibrationPattern:[0,900,400,900],
  });
 }
 export async function notificationPermissionGranted(){return allowed(await Notifications.getPermissionsAsync())}
@@ -35,10 +44,13 @@ async function runReconciliation(db:SQLiteDatabase):Promise<ReminderDiagnostic>{
  const desired=makeReminderPlan(occurrences,new Set(confirmed.map(x=>x.occurrence_id)),Date.now(),settings.showDetails,MAX_MEDICATION_NOTIFICATIONS,mode,language);
  const native:NativeReminder[]=old.map(x=>({identifier:x.identifier,occurrenceId:typeof x.content.data?.occurrenceId==='string'?x.content.data.occurrenceId:undefined,fingerprint:typeof x.content.data?.fingerprint==='string'?x.content.data.fingerprint:undefined}));
  const diff=diffReminderPlan(desired,native);for(const id of diff.cancelIds)await Notifications.cancelScheduledNotificationAsync(id);
+ const channels=new Set<string>();
  for(const event of diff.create){
+  const channelId=medicationChannelForLanguage(language,event.medicationId,event.alarmSound);
+  if(Platform.OS==='android'&&!channels.has(channelId)){await ensureMedicationChannel(language,event.medicationId,event.alarmSound);channels.add(channelId)}
   const message=formatMedicationNotification(event,settings.showDetails,language);
-  await Notifications.scheduleNotificationAsync({content:{...message,data:{kind:MEDICATION_KIND,occurrenceId:event.id,fingerprint:event.fingerprint},sound:'default',...(Platform.OS==='android'?{priority:Notifications.AndroidNotificationPriority.HIGH}:{})},
-   trigger:{type:Notifications.SchedulableTriggerInputTypes.DATE,date:new Date(event.plannedAtISO),...(Platform.OS==='android'?{channelId:medicationChannelForLanguage(language)}:{})}});
+  await Notifications.scheduleNotificationAsync({content:{...message,data:{kind:MEDICATION_KIND,occurrenceId:event.id,fingerprint:event.fingerprint},sound:notificationSound(event.alarmSound),vibrationPattern:[0,900,400,900],...(Platform.OS==='android'?{priority:Notifications.AndroidNotificationPriority.HIGH}:{})},
+   trigger:{type:Notifications.SchedulableTriggerInputTypes.DATE,date:new Date(event.plannedAtISO),...(Platform.OS==='android'?{channelId}:{})}});
  }
  const finalPending=await ownedPending(),byId=new Map(desired.map(x=>[x.id,x])),stamp=new Date().toISOString(),seen=new Set<string>();
  await writeReminderJobs(db,finalPending.flatMap(request=>{const id=request.content.data?.occurrenceId,fp=request.content.data?.fingerprint;if(typeof id!=='string'||typeof fp!=='string'||seen.has(id))return [];
