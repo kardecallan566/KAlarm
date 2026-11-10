@@ -5,15 +5,23 @@ import {scheduleTransitionDates} from '../../../src/core/scheduleTransitions.ts'
 import {makeReminderPlan} from '../../../src/services/reminderPlan.ts';
 import type {Schedule} from '../../../src/core/scheduling.ts';
 
-test('editar hoje começa amanhã e encerra a versão anterior ontem',()=>{
+test('editar hoje começa amanhã e preserva a versão anterior até hoje',()=>{
  const transition=scheduleTransitionDates('2026-11-03',true);
- assert.deepEqual(transition,{startDate:'2026-11-04',previousEffectiveUntil:'2026-11-02'});
+ assert.deepEqual(transition,{startDate:'2026-11-04',previousEffectiveUntil:'2026-11-03'});
  const previous:Schedule={id:'med:v1',medicationId:'med',version:1,timezone:'America/Sao_Paulo',
   startDate:'2026-11-01',effectiveFrom:'2026-11-01',effectiveUntil:transition.previousEffectiveUntil,
   recurrence:{mode:'daily',plan:{kind:'slots',slots:[{id:'morning',time:'08:00',quantity:'1',unit:'tablet'}]}}};
- assert.equal(previewOccurrences(previous,{from:'2026-11-03',to:'2026-11-03'}).length,0);
+ assert.equal(previewOccurrences(previous,{from:'2026-11-03',to:'2026-11-03'}).length,1);
 });
 
+
+test('editar medicamento cadastrado hoje não cria intervalo efetivo inválido',()=>{
+ const today='2026-11-03',transition=scheduleTransitionDates(today,true);
+ const previous:Schedule={id:'med:v1',medicationId:'med',version:1,timezone:'America/Sao_Paulo',
+  startDate:today,effectiveFrom:today,effectiveUntil:transition.previousEffectiveUntil,
+  recurrence:{mode:'daily',plan:{kind:'slots',slots:[{id:'morning',time:'08:00',quantity:'1',unit:'tablet'}]}}};
+ assert.equal(previewOccurrences(previous,{from:today,to:today}).length,1);
+});
 test('medicamento novo mantém hoje como início da programação',()=>{
  assert.deepEqual(scheduleTransitionDates('2026-11-03',false),{startDate:'2026-11-03'});
 });

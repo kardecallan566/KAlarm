@@ -31,6 +31,20 @@ class MobileSchemaTest(unittest.TestCase):
         self.db.execute(query,args)
         self.assertEqual(self.db.execute('SELECT count(*) FROM intake_confirmations').fetchone()[0],1)
 
+
+    def test_migration_repairs_same_day_edit_and_adds_alarm_sound(self):
+        src = SCHEMA.read_text()
+        alter = re.search(r"ALTER TABLE medications ADD COLUMN alarm_sound[^;]+;", src)
+        repair = re.search(r"UPDATE schedules SET effective_until=effective_from WHERE effective_until IS NOT NULL AND effective_until<effective_from;", src)
+        self.assertIsNotNone(alter, 'alarm sound migration missing')
+        self.assertIsNotNone(repair, 'same-day schedule repair missing')
+        self.db.execute(alter.group(0))
+        self.db.execute("INSERT INTO medications(id,name,form,created_at,updated_at) VALUES('m','Med A','tablet','x','x')")
+        self.db.execute("INSERT INTO schedules(id,medication_id,version,timezone,start_date,effective_from,effective_until,recurrence_json,created_at) VALUES('m:v1','m',1,'UTC','2026-11-03','2026-11-03','2026-11-02','{}','x')")
+        self.db.execute(repair.group(0))
+        self.assertEqual(self.db.execute("SELECT effective_until FROM schedules WHERE id='m:v1'").fetchone()[0], '2026-11-03')
+        self.assertEqual(self.db.execute("SELECT alarm_sound FROM medications WHERE id='m'").fetchone()[0], 'default')
+
     def test_orphan_schedule_is_rejected(self):
         with self.assertRaises(sqlite3.IntegrityError):
             self.db.execute("INSERT INTO schedules(id,medication_id,version,timezone,start_date,effective_from,recurrence_json,created_at) VALUES('s','missing',1,'UTC','2026-10-21','2026-10-21','{}','x')")

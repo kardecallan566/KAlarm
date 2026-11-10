@@ -5,7 +5,7 @@ export async function migrate(db: SQLiteDatabase): Promise<void> {
   await db.execAsync('PRAGMA foreign_keys = ON;');
   const row = await db.getFirstAsync<{user_version:number}>('PRAGMA user_version');
   const version=row?.user_version??0;
-  if(version>=3)return;
+  if(version>=4)return;
   if (version < 1) {
   await db.withTransactionAsync(async () => {
     await db.execAsync(`
@@ -78,4 +78,13 @@ export async function migrate(db: SQLiteDatabase): Promise<void> {
     `);
     await db.execAsync('PRAGMA user_version = 3;');
   });
+  if(version<4){
+    await db.withTransactionAsync(async()=>{
+      await db.execAsync(`
+        ALTER TABLE medications ADD COLUMN alarm_sound TEXT NOT NULL DEFAULT 'default' CHECK(alarm_sound IN ('default','bell','chime','pulse'));
+        UPDATE schedules SET effective_until=effective_from WHERE effective_until IS NOT NULL AND effective_until<effective_from;
+      `);
+      await db.execAsync('PRAGMA user_version = 4;');
+    });
+  }
 }
