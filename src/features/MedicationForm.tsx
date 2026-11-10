@@ -9,7 +9,7 @@ import type { DayPlan, Recurrence, Schedule, Unit, Weekday } from '../core/sched
 import { previewOccurrences } from '../core/scheduling';
 import { deviceTimezone, localToday, offsetDate } from '../core/dates';
 import { DayEditor, NO_DOSE, newDay } from './DayEditor';
-import { getMedication, saveMedication } from '../data/medications';
+import { getMedication, saveMedication, type AlarmSound } from '../data/medications';
 import { reconcileMedicationReminders } from '../services/medicationReminders';
 import {useLanguage} from '../i18n/LanguageProvider';
 import {localizedQuantity} from '../i18n/quantity';
@@ -23,7 +23,7 @@ export function MedicationForm({id}:{id?:string}) {
   const db=useSQLiteContext();const router=useRouter();const {width}=useWindowDimensions();const {t,language}=useLanguage();const weekdayNames=language==='pt-BR'?['Seg','Ter','Qua','Qui','Sex','Sáb','Dom']:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const [loading,setLoading]=useState(!!id);const [saving,setSaving]=useState(false);
   const [name,setName]=useState('');const [strength,setStrength]=useState('');
-  const [form,setForm]=useState<Unit>('tablet');const [startDate,setStartDate]=useState(localToday());
+  const [form,setForm]=useState<Unit>('tablet');const [alarmSound,setAlarmSound]=useState<AlarmSound>('default');const [startDate,setStartDate]=useState(localToday());
   const [mode,setMode]=useState<Mode>('daily');const [daily,setDaily]=useState<DayPlan>(newDay());
   const [week,setWeek]=useState<Record<Weekday,DayPlan>>(newWeek);
   const [steps,setSteps]=useState<DayPlan[]>([newDay(),newDay()]);
@@ -33,7 +33,7 @@ export function MedicationForm({id}:{id?:string}) {
   const changed=()=>{setReviewed(false);setError('');};
   useEffect(()=>{if(!id)return;let active=true;
     getMedication(db,id).then(m=>{if(!m||!active)return;const schedule=m.schedules.at(-1);if(!schedule)return;
-      setName(m.name);setStrength(m.strengthLabel??'');setForm(m.form);setStartDate(schedule.startDate);
+      setName(m.name);setStrength(m.strengthLabel??'');setForm(m.form);setAlarmSound(m.alarmSound);setStartDate(schedule.startDate);
       const r=schedule.recurrence;
       if(r.mode==='daily'){setMode('daily');setDaily(r.plan);}
       if(r.mode==='weekly-matrix'){setMode('weekly-matrix');setWeek(r.days);}
@@ -56,7 +56,7 @@ export function MedicationForm({id}:{id?:string}) {
   const save=async()=>{
     if(!reviewed||saving)return;
     setSaving(true);
-    try{await saveMedication(db,{name,form,strengthLabel:strength,startDate,timezone,recurrence:makeRecurrence()},id);try{await reconcileMedicationReminders(db)}catch(_error){Alert.alert(t('form.saveErrorTitle'),t('form.saveErrorBody'))}router.replace('/(tabs)/medicines');}
+    try{await saveMedication(db,{name,form,strengthLabel:strength,alarmSound,startDate,timezone,recurrence:makeRecurrence()},id);try{await reconcileMedicationReminders(db)}catch(_error){Alert.alert(t('form.saveErrorTitle'),t('form.saveErrorBody'))}router.replace('/(tabs)/medicines');}
     catch(e){setError(e instanceof Error?e.message:String(e));}
     finally{setSaving(false);}
   };
@@ -69,6 +69,7 @@ export function MedicationForm({id}:{id?:string}) {
       <Text style={label}>{t('form.name')}</Text><TextInput style={field} value={name} onChangeText={v=>{setName(v);changed()}} maxLength={160} placeholder={t('form.namePlaceholder')} accessibilityLabel={t('form.name')}/>
       <Text style={label}>{t('form.strength')}</Text><TextInput style={field} value={strength} onChangeText={v=>{setStrength(v);changed()}} placeholder={t('form.strengthPlaceholder')} accessibilityLabel={t('form.strength')}/>
       <Text style={label}>{t('form.form')}</Text><View style={{flexDirection:'row',flexWrap:'wrap',gap:8}}>{([{value:'tablet',label:t('unit.tablet')},{value:'capsule',label:t('unit.capsule')},{value:'drop',label:t('unit.drop')},{value:'ml',label:t('unit.ml')},{value:'other',label:t('unit.other')}] as const).map(x=><Pressable key={x.value} accessibilityRole="button" accessibilityState={{selected:form===x.value}} onPress={()=>{setForm(x.value);changed()}} style={[chip,form===x.value?chipActive:null]}><Text style={{fontWeight:'700',color:form===x.value?c.surface:c.primary}}>{x.label}</Text></Pressable>)}</View>
+      <Text style={label}>{t('form.alarmSound')}</Text><View style={{flexDirection:'row',flexWrap:'wrap',gap:8,marginTop:4}}>{([{value:'default' as const,label:t('form.soundDefault')},{value:'bell' as const,label:t('form.soundBell')},{value:'chime' as const,label:t('form.soundChime')},{value:'pulse' as const,label:t('form.soundPulse')}] as const).map(x=><Pressable key={x.value} accessibilityRole="button" accessibilityState={{selected:alarmSound===x.value}} onPress={()=>{setAlarmSound(x.value);changed()}} style={[chip,alarmSound===x.value?chipActive:null]}><Text style={{fontWeight:'700',color:alarmSound===x.value?c.surface:c.primary}}>{x.label}</Text></Pressable>)}</View><Body muted>{t('form.alarmSoundNote')}</Body>
       <Text style={label}>{t('form.startDate')}</Text><TextInput style={field} value={startDate} onChangeText={v=>{setStartDate(v);changed()}} maxLength={10} placeholder={t('form.startDatePlaceholder')} accessibilityLabel={t('form.startDateAccessibility')} editable={!id}/>
       {id?<Body muted>{t('form.editStartsTomorrow')}</Body>:null}
     </Panel>
