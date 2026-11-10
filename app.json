@@ -16,7 +16,8 @@
       },
       "permissions": [
         "android.permission.POST_NOTIFICATIONS",
-        "android.permission.VIBRATE"
+        "android.permission.VIBRATE",
+        "com.google.android.gms.permission.AD_ID"
       ]
     },
     "ios": {
