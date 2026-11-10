@@ -40,7 +40,7 @@ export async function getMedication(db:SQLiteDatabase,id:string):Promise<Medicat
 export function upcomingForMedications(meds:Medication[],from:string,to:string):Array<Occurrence & {medicationName:string}> {
   return meds.filter(m=>!m.archived).flatMap(m=>m.schedules.flatMap(s=>
     previewWindow(s,from,to).map(o=>({...o,medicationName:m.name,alarmSound:m.alarmSound})))
-  )).sort((a,b)=>a.plannedAtISO.localeCompare(b.plannedAtISO)||a.id.localeCompare(b.id));
+  ).sort((a,b)=>a.plannedAtISO.localeCompare(b.plannedAtISO)||a.id.localeCompare(b.id));
 }
 function validateDraft(d:MedicationDraft,id:string,version:number):Schedule {
   if(!d.name.trim()||d.name.trim().length>160) throw new Error('Informe o nome do medicamento (até 160 caracteres).');
