@@ -12,10 +12,10 @@ export type IntakeConfirmation = {
   occurrence_id:string; medication_id:string; schedule_id:string; medication_name:string;
   local_date:string; scheduled_at_utc:string; quantity:string; unit:Unit; confirmed_at_utc:string;
 };
-export type MedicationDraft = { name:string; form:Unit; strengthLabel:string; startDate:string; recurrence:Recurrence; timezone:string };
-type MedicationRow = {id:string;name:string;form:Unit;strength_label:string|null;archived:number};
+export type MedicationDraft = { name:string; form:Unit; strengthLabel:string; alarmSound:AlarmSound; startDate:string; recurrence:Recurrence; timezone:string };
+type MedicationRow = {id:string;name:string;form:Unit;strength_label:string|null;alarm_sound:string;archived:number};
 type ScheduleRow = {id:string;medication_id:string;version:number;timezone:string;start_date:string;end_date:string|null;effective_from:string;effective_until:string|null;recurrence_json:string;overrides_json:string};
-const newId=():string=>`${Date.now().toString(36)}-${Math.random().toString(36).slice(2,11)}`;
+const validAlarmSound=(value:string):AlarmSound=>value==='bell'||value==='chime'||value==='pulse'?value:'default';\nconst newId=():string=>`${Date.now().toString(36)}-${Math.random().toString(36).slice(2,11)}`;
 const now=()=>new Date().toISOString();
 
 function fromRow(row:ScheduleRow):Schedule {
@@ -27,7 +27,7 @@ function fromRow(row:ScheduleRow):Schedule {
 export async function listMedications(db:SQLiteDatabase, includeArchived=false):Promise<Medication[]> {
   const rows=await db.getAllAsync<MedicationRow>(`SELECT * FROM medications ${includeArchived?'':'WHERE archived=0'} ORDER BY name COLLATE NOCASE`);
   const schedules=await db.getAllAsync<ScheduleRow>('SELECT * FROM schedules ORDER BY version');
-  return rows.map(row=>({id:row.id,name:row.name,form:row.form,strengthLabel:row.strength_label,archived:row.archived===1,schedules:schedules.filter(s=>s.medication_id===row.id).map(fromRow)}));
+  return rows.map(row=>({id:row.id,name:row.name,form:row.form,strengthLabel:row.strength_label,alarmSound:validAlarmSound(row.alarm_sound),archived:row.archived===1,schedules:schedules.filter(s=>s.medication_id===row.id).map(fromRow)}));
 }
 export async function getMedication(db:SQLiteDatabase,id:string):Promise<Medication|null> {
   const rows=await listMedications(db,true);
@@ -61,10 +61,10 @@ export async function saveMedication(db:SQLiteDatabase,draft:MedicationDraft,exi
   const updated=now();
   await db.withTransactionAsync(async()=>{
     if(existing) {
-      await db.runAsync('UPDATE medications SET name=?,form=?,strength_label=?,updated_at=? WHERE id=?',draft.name.trim(),draft.form,draft.strengthLabel.trim()||null,updated,id);
+      await db.runAsync('UPDATE medications SET name=?,form=?,strength_label=?,alarm_sound=?,updated_at=? WHERE id=?',draft.name.trim(),draft.form,draft.strengthLabel.trim()||null,validAlarmSound(draft.alarmSound),updated,id);
       if(latest && !revisePending && transition.previousEffectiveUntil) await db.runAsync('UPDATE schedules SET effective_until=? WHERE id=?',transition.previousEffectiveUntil,latest.id);
     } else {
-      await db.runAsync('INSERT INTO medications(id,name,form,strength_label,created_at,updated_at) VALUES(?,?,?,?,?,?)',id,draft.name.trim(),draft.form,draft.strengthLabel.trim()||null,updated,updated);
+      await db.runAsync('INSERT INTO medications(id,name,form,strength_label,alarm_sound,created_at,updated_at) VALUES(?,?,?,?,?,?,?)',id,draft.name.trim(),draft.form,draft.strengthLabel.trim()||null,validAlarmSound(draft.alarmSound),updated,updated);
     }
     if(revisePending) {
       await db.runAsync('UPDATE schedules SET timezone=?,start_date=?,effective_from=?,recurrence_json=?,overrides_json=? WHERE id=?',
