@@ -15,3 +15,6 @@ pnpm-debug.log*
 !.env.example
 coverage/
 .DS_Store
+
+# Gerados pelo app.config.js para sons locais do KAlarm
+assets/sounds/*.wav
