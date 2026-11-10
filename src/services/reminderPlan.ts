@@ -1,12 +1,13 @@
 /** Funções puras, sem dependências de Expo ou SQLite. */
 import type {AppLanguage} from '../data/appPreferences';
-export type ReminderCandidate={id:string;plannedAtISO:string;localTime:string;medicationName:string;quantity:string;unit:string};
+import type {AlarmSound} from '../data/medications';
+export type ReminderCandidate={id:string;medicationId?:string;alarmSound?:AlarmSound;plannedAtISO:string;localTime:string;medicationName:string;quantity:string;unit:string};
 export type DeliveryMode='alarmClock'|'bestEffort';
-export type PlannedReminder=ReminderCandidate&{fingerprint:string};
+export type PlannedReminder=ReminderCandidate&{alarmSound:AlarmSound;fingerprint:string};
 export type QueueAudit={expected:number;matched:number;missing:number;obsolete:number;firstPlannedAtISO:string|null;lastPlannedAtISO:string|null;atCapacity:boolean};
 export type NativeReminder={identifier:string;occurrenceId?:string;fingerprint?:string};
 export const MEDICATION_KIND='kalarm-medication-v1';
-export const REMINDER_CONTENT_VERSION='notification-v4';
+export const REMINDER_CONTENT_VERSION='notification-v5';
 export const REMINDER_HORIZON_DAYS=30;
 export const MAX_MEDICATION_NOTIFICATIONS=40;
 export function makeReminderPlan(events:ReminderCandidate[],confirmed:ReadonlySet<string>,nowMs:number,showDetails:boolean,limit=MAX_MEDICATION_NOTIFICATIONS,deliveryMode:DeliveryMode='bestEffort',language:AppLanguage='pt-BR'):PlannedReminder[]{
@@ -15,7 +16,7 @@ export function makeReminderPlan(events:ReminderCandidate[],confirmed:ReadonlySe
  return events.filter(e=>Number.isFinite(Date.parse(e.plannedAtISO))&&Date.parse(e.plannedAtISO)>nowMs+2000&&!confirmed.has(e.id))
   .sort((a,b)=>a.plannedAtISO.localeCompare(b.plannedAtISO)||a.id.localeCompare(b.id))
   .filter(e=>{if(seen.has(e.id))return false;seen.add(e.id);return true})
-  .slice(0,limit).map(e=>({...e,fingerprint:JSON.stringify([REMINDER_CONTENT_VERSION,e.id,e.plannedAtISO,showDetails?e.medicationName:'',showDetails?e.quantity:'',showDetails?e.unit:'',e.localTime,showDetails,deliveryMode,language])}));
+  .slice(0,limit).map(e=>({...e,alarmSound:e.alarmSound??'default',fingerprint:JSON.stringify([REMINDER_CONTENT_VERSION,e.id,e.plannedAtISO,showDetails?e.medicationName:'',showDetails?e.quantity:'',showDetails?e.unit:'',e.localTime,showDetails,e.alarmSound??'default',deliveryMode,language])}));
 }
 export function diffReminderPlan(desired:PlannedReminder[],native:NativeReminder[]){
  const wanted=new Map(desired.map(e=>[e.id,e]));const used=new Set<string>(),keep:NativeReminder[]=[],cancelIds:string[]=[];
