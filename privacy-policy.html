@@ -7,13 +7,13 @@
   <meta name="description" content="Política de Privacidade do aplicativo KAlarm.">
   <title>Política de Privacidade — KAlarm</title>
   <style>
-    :root{color-scheme:light;--bg:#f7faf8;--surface:#fff;--ink:#18352a;--muted:#52685d;--green:#267b57;--line:#dce9e1;--soft:#e8f5ed}
+    :root{color-scheme:light;--bg:#F7FAF8;--surface:#fff;--ink:#18352A;--muted:#52685D;--green:#2F7659;--mint:#56B78B;--line:#DCE9E1;--soft:#E0F1E7;--warm:#E5AE8B}
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.72 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
     header{padding:clamp(32px,7vw,76px) 20px 34px;background:linear-gradient(145deg,#e6f5ec,#f7faf8);border-bottom:1px solid var(--line)}
     .wrap{width:min(850px,100% - 32px);margin-inline:auto}
-    .brand{display:inline-flex;align-items:center;gap:9px;color:var(--green);font-weight:800;letter-spacing:.02em}
-    .mark{width:28px;height:28px;border-radius:9px;background:var(--green);color:#fff;display:grid;place-items:center;font-size:15px}
+    .brand{display:inline-flex;align-items:center;gap:12px;color:var(--green);font-weight:800;letter-spacing:.02em;font-size:1.08rem}
+    .brand-logo{width:52px;height:52px;object-fit:contain;border-radius:14px;box-shadow:0 5px 16px #2f76591a}
     h1{font-size:clamp(2rem,5vw,3.1rem);line-height:1.12;letter-spacing:-.04em;margin:22px 0 12px}
     .updated{color:var(--muted);font-size:.93rem}
     main{padding:28px 0 64px}
@@ -23,9 +23,13 @@
     p{margin:10px 0}
     ul{padding-left:23px;margin:10px 0}
     li{padding:3px 0}
-    a{color:#176b48;text-underline-offset:3px;overflow-wrap:anywhere}
+    a{color:#2F7659;text-underline-offset:3px;overflow-wrap:anywhere}
     .notice{padding:15px 17px;background:var(--soft);border-left:4px solid var(--green);border-radius:10px;margin:18px 0}
     .contact{background:#f3f8f5;border:1px solid var(--line);padding:18px;border-radius:12px}
+    .store-card{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:18px 20px;margin:20px 0;background:linear-gradient(135deg,#E0F1E7,#F7FAF8);border:1px solid #c9e4d4;border-radius:16px}
+    .store-card p{margin:5px 0 0;color:var(--muted);font-size:.94rem}
+    .store-link{display:inline-flex;align-items:center;justify-content:center;padding:11px 16px;border-radius:12px;background:var(--green);color:#fff!important;font-weight:700;text-decoration:none;white-space:nowrap;box-shadow:0 4px 12px #2f76591f}
+    .store-link:hover{background:#245d45;color:#fff}
     footer{text-align:center;color:var(--muted);font-size:.88rem;padding:0 16px 32px}
     @media(prefers-reduced-motion:no-preference){a{transition:color .15s}a:hover{color:#0d4d31}}
   </style>
@@ -33,7 +37,7 @@
 <body>
   <header>
     <div class="wrap">
-      <div class="brand"><span class="mark" aria-hidden="true">K</span> KAlarm</div>
+      <div class="brand"><img class="brand-logo" src="/public/kalarm-logo.svg" alt="Logo do KAlarm"> KAlarm</div>
       <h1>Política de Privacidade</h1>
       <p>Transparência sobre os dados usados pelo aplicativo KAlarm.</p>
       <div class="updated">Última atualização: 10 de novembro de 2026</div>
@@ -42,6 +46,15 @@
   <main class="wrap">
     <article>
       <p>Esta Política de Privacidade explica como o aplicativo <strong>KAlarm</strong> trata as informações inseridas por você ao cadastrar medicamentos, organizar horários e registrar doses. Ela se aplica à versão atual do aplicativo distribuída para Android e iOS.</p>
+
+      <div class="store-card">
+        <div>
+          <strong>Informações oficiais do aplicativo</strong>
+          <p>Consulte a ficha do KAlarm na Google Play para ver a descrição, detalhes da versão, permissões e a seção Segurança dos dados.</p>
+        </div>
+        <a class="store-link" href="https://play.google.com/store/apps/details?id=com.kardec.kalarm" target="_blank" rel="noopener noreferrer">Ver na Google Play ↗</a>
+      </div>
+      <p>Essas informações complementam esta política. A ficha da loja não substitui a descrição, nesta página, de como os dados são tratados pelo KAlarm.</p>
 
       <div class="notice"><strong>Em resumo:</strong> o KAlarm funciona sem conta. Os dados que você cadastra ficam armazenados localmente no dispositivo. O aplicativo não mantém servidor próprio para receber, sincronizar ou compartilhar esses dados.</div>
 
