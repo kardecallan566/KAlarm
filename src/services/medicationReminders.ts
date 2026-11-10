@@ -49,7 +49,7 @@ async function runReconciliation(db:SQLiteDatabase):Promise<ReminderDiagnostic>{
   const channelId=medicationChannelForLanguage(language,event.medicationId,event.alarmSound);
   if(Platform.OS==='android'&&!channels.has(channelId)){await ensureMedicationChannel(language,event.medicationId,event.alarmSound);channels.add(channelId)}
   const message=formatMedicationNotification(event,settings.showDetails,language);
-  await Notifications.scheduleNotificationAsync({content:{...message,data:{kind:MEDICATION_KIND,occurrenceId:event.id,fingerprint:event.fingerprint},sound:notificationSound(event.alarmSound)...(Platform.OS==='android'?{priority:Notifications.AndroidNotificationPriority.HIGH}:{})},
+  await Notifications.scheduleNotificationAsync({content:{...message,data:{kind:MEDICATION_KIND,occurrenceId:event.id,fingerprint:event.fingerprint},sound:notificationSound(event.alarmSound),...(Platform.OS==='android'?{priority:Notifications.AndroidNotificationPriority.HIGH}:{})},
    trigger:{type:Notifications.SchedulableTriggerInputTypes.DATE,date:new Date(event.plannedAtISO),...(Platform.OS==='android'?{channelId}:{})}});
  }
  const finalPending=await ownedPending(),byId=new Map(desired.map(x=>[x.id,x])),stamp=new Date().toISOString(),seen=new Set<string>();
