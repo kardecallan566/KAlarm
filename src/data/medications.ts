@@ -1,6 +1,7 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 import type { Schedule, Recurrence, Unit, Occurrence } from '../core/scheduling';
 import { previewWindow, offsetDate, localToday } from '../core/dates';
+import { scheduleTransitionDates } from '../core/scheduleTransitions';
 import { previewOccurrences, normalizeQuantity } from '../core/scheduling';
 
 export type Medication = {
@@ -49,7 +50,9 @@ export async function saveMedication(db:SQLiteDatabase,draft:MedicationDraft,exi
   const existing=existingId?await getMedication(db,existingId):null;
   if(existingId&&!existing)throw new Error('Medicamento não encontrado.');
   const latest=existing?.schedules.at(-1);
-  const start=existing?offsetDate(localToday(latest?.timezone??draft.timezone),1):draft.startDate;
+  const today=localToday(latest?.timezone??draft.timezone);
+  const transition=scheduleTransitionDates(today,Boolean(existing));
+  const start=transition.startDate;
   // A version that has not started can be corrected in place without touching historical events.
   const revisePending=Boolean(latest && latest.effectiveFrom && latest.effectiveFrom>=start);
   const version=revisePending?latest!.version:(latest?.version??0)+1;
@@ -59,7 +62,7 @@ export async function saveMedication(db:SQLiteDatabase,draft:MedicationDraft,exi
   await db.withTransactionAsync(async()=>{
     if(existing) {
       await db.runAsync('UPDATE medications SET name=?,form=?,strength_label=?,updated_at=? WHERE id=?',draft.name.trim(),draft.form,draft.strengthLabel.trim()||null,updated,id);
-      if(latest && !revisePending) await db.runAsync('UPDATE schedules SET effective_until=? WHERE id=?',offsetDate(start,-1),latest.id);
+      if(latest && !revisePending && transition.previousEffectiveUntil) await db.runAsync('UPDATE schedules SET effective_until=? WHERE id=?',transition.previousEffectiveUntil,latest.id);
     } else {
       await db.runAsync('INSERT INTO medications(id,name,form,strength_label,created_at,updated_at) VALUES(?,?,?,?,?,?)',id,draft.name.trim(),draft.form,draft.strengthLabel.trim()||null,updated,updated);
     }

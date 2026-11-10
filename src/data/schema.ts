@@ -4,8 +4,9 @@ import type { SQLiteDatabase } from 'expo-sqlite';
 export async function migrate(db: SQLiteDatabase): Promise<void> {
   await db.execAsync('PRAGMA foreign_keys = ON;');
   const row = await db.getFirstAsync<{user_version:number}>('PRAGMA user_version');
-  if ((row?.user_version ?? 0) >= 2) return;
-  if ((row?.user_version ?? 0) < 1) {
+  const version=row?.user_version??0;
+  if(version>=3)return;
+  if (version < 1) {
   await db.withTransactionAsync(async () => {
     await db.execAsync(`
       CREATE TABLE IF NOT EXISTS medications (
@@ -66,5 +67,15 @@ export async function migrate(db: SQLiteDatabase): Promise<void> {
       CREATE INDEX IF NOT EXISTS idx_reminder_jobs_date ON reminder_jobs(planned_at_utc);
     `);
     await db.execAsync('PRAGMA user_version = 2;');
+  });
+  await db.withTransactionAsync(async()=>{
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS app_preferences (
+        id INTEGER PRIMARY KEY NOT NULL CHECK(id=1),
+        language TEXT NOT NULL DEFAULT 'pt-BR' CHECK(language IN ('pt-BR','en-US'))
+      );
+      INSERT OR IGNORE INTO app_preferences(id,language) VALUES(1,'pt-BR');
+    `);
+    await db.execAsync('PRAGMA user_version = 3;');
   });
 }
