@@ -25,7 +25,7 @@ function writeTone(fileName, notes) {
     const local = time - index * segment;
     const frequency = notes[Math.min(index, notes.length - 1)];
     const release = index >= notes.length ? Math.max(0, 1 - (time - notes.length * segment) / tail) : 1;
-    const envelope = Math.min(1, local / 0.018, Math.max(0, (segment - local) / 0.055) * release;
+    const envelope = Math.min(1, local / 0.018, Math.max(0, (segment - local) / 0.055) * release);
     const wave = Math.sin(2 * Math.PI * frequency * time) + 0.24 * Math.sin(4 * Math.PI * frequency * time);
     const sample = Math.max(-1, Math.min(1, wave * envelope * 0.34));
     data.writeInt16LE(Math.round(sample * 32767), 44 + i * 2);
