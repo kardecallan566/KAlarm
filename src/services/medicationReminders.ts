@@ -18,7 +18,8 @@ export type ReminderDiagnostic={enabled:boolean;showDetails:boolean;permitted:bo
 const allowed=(p:Notifications.NotificationPermissionsStatus)=>p.granted||p.ios?.status===Notifications.IosAuthorizationStatus.PROVISIONAL;
 const notificationSound=(sound:AlarmSound)=>sound==='default'?'default':`${sound}.wav`;
 export async function ensureMedicationChannel(language:AppLanguage='pt-BR',medicationId?:string,sound:AlarmSound='default'){
- // The notification channel handles its initial pattern; AlarmActive repeats vibration while open.\n if(Platform.OS==='android')await Notifications.setNotificationChannelAsync(medicationChannelForLanguage(language,medicationId,sound),{
+ // The notification channel handles its initial pattern; AlarmActive repeats vibration while open.
+ if(Platform.OS==='android')await Notifications.setNotificationChannelAsync(medicationChannelForLanguage(language,medicationId,sound),{
   name:medicationId?(language==='pt-BR'?'KAlarm · Alarme do medicamento':'KAlarm · Medication alarm'):(language==='pt-BR'?'KAlarm · Medicamentos':'KAlarm · Medications'),
   description:language==='pt-BR'?'Avisos de doses que você programou':'Alerts for your scheduled doses',
   importance:Notifications.AndroidImportance.HIGH,
