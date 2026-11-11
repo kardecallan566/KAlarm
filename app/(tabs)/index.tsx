@@ -11,6 +11,7 @@ import {localizedDay} from '../../src/i18n/date';
 import {colors as c} from '../../src/theme';
 import {useLanguage} from '../../src/i18n/LanguageProvider';
 import {localizedQuantity} from '../../src/i18n/quantity';
+import {SafeAdBanner} from '../../src/components/AdMob';
 import type {Occurrence} from '../../src/core/scheduling';
 type DisplayOccurrence=Occurrence&{medicationName:string};
 const expoGoSafe=process.env.EXPO_PUBLIC_KALARM_GO_SAFE==='1';
@@ -47,5 +48,6 @@ export default function Home(){
   </Panel>;
   })}
   <Panel tone="blue"><Heading>{t('home.reminderTitle')}</Heading><Body muted>{t('home.reminderBody')}</Body><View style={{height:10}}/><Action label={expoGoSafe?t('home.reminderActionSafe'):t('home.reminderAction')} secondary icon="alarm" onPress={()=>router.push('/reminder-settings')}/></Panel>
+  <SafeAdBanner/>
  </Page>;
 }
