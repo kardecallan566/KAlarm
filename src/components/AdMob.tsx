@@ -47,7 +47,8 @@ export function SafeAdBanner() {
       <Text style={{ fontSize: 11, color: colors.muted, marginBottom: 4 }}>Publicidade</Text>
       <BannerAd
         unitId={TestIds.BANNER}
-        size={BannerAdSize.LARGE_ANCHORED_ADAPTIVE_BANNER}
+        size={BannerAdSize.INLINE_ADAPTIVE_BANNER}
+        maxHeight={100}
         onAdFailedToLoad={(error: unknown) => console.warn('[KAlarm] Banner não carregado:', error)}
       />
     </View>;
