@@ -7,6 +7,7 @@ import { colors } from '../src/theme';
 import { migrate } from '../src/data/schema';
 import { ReminderLifecycle } from '../src/components/ReminderLifecycle';
 import { LanguageProvider } from '../src/i18n/LanguageProvider';
+import { AdMobProvider } from '../src/components/AdMob';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -40,6 +41,7 @@ export default function RootLayout() {
       <ActivityIndicator size="large" color={colors.primary}/>
       <Text style={{ color: colors.ink, marginTop: 14, fontSize: 16 }}>Preparando seus medicamentos…</Text>
     </View>}>
+      <AdMobProvider>
       <SQLiteProvider databaseName="kalarm.db" onInit={migrate} useSuspense>
         <LanguageProvider>
           <ReminderLifecycle/>
@@ -54,6 +56,7 @@ export default function RootLayout() {
           </Stack>
         </LanguageProvider>
       </SQLiteProvider>
+      </AdMobProvider>
     </Suspense>
   </StartupErrorBoundary>;
 }
